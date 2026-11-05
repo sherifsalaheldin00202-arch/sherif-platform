@@ -6,6 +6,7 @@
 <script src="./vendor/react.js"></script>
 <script src="./vendor/react-dom.js"></script>
 <script src="./support.js"></script>
+<script src="./api.js"></script>
 </head>
 <body>
 <x-dc>
@@ -207,7 +208,8 @@ a:hover{color:#FFC93C}
         <div style="display:flex;flex-direction:column;gap:14px">
           <div><label for="lg-phone" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">رقم الهاتف</label><input id="lg-phone" class="field" type="tel" inputmode="tel" autocomplete="tel"></div>
           <div><label for="lg-pass" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">كلمة المرور</label><input id="lg-pass" class="field" type="password" autocomplete="current-password"></div>
-          <a href="Student.dc.html" class="btn3d btn-main" style="display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:16px;font-size:20px;margin-top:6px;color:#1A1200">دخول</a>
+          <sc-if value="{{hasErr}}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding:10px 14px;border-radius:12px;background:#2A1530;border:1px solid #FF6B9A;color:#FFB3CC;font-size:15px;line-height:1.6">{{err}}</div></sc-if>
+          <a href="Student.dc.html" onClick="{{doLogin}}" class="btn3d btn-main" style="display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:16px;font-size:20px;margin-top:6px;color:#1A1200">دخول</a>
           <button type="button" onClick="{{goRegister}}" style="min-height:44px;background:none;border:0;color:#2DD4BF;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:700;cursor:pointer">ليس لديك حساب؟ سجّل حساب جديد</button>
         </div>
       </sc-if>
@@ -216,13 +218,15 @@ a:hover{color:#FFC93C}
         <div style="display:flex;flex-direction:column;gap:14px">
           <div><label for="rg-name" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">اسم الطالب (ثلاثي)</label><input id="rg-name" class="field" type="text" autocomplete="name"></div>
           <div><label for="rg-phone" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">رقم هاتف الطالب</label><input id="rg-phone" class="field" type="tel" inputmode="tel"></div>
+          <div><label for="rg-pass" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">كلمة المرور (٨ أحرف على الأقل)</label><input id="rg-pass" class="field" type="password" autocomplete="new-password"></div>
           <div><label for="rg-parent" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">رقم ولي الأمر</label><input id="rg-parent" class="field" type="tel" inputmode="tel"></div>
           <div><label for="rg-school" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">المدرسة</label><input id="rg-school" class="field" type="text"></div>
           <div><label for="rg-gov" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">المحافظة</label><input id="rg-gov" class="field" type="text"></div>
           <div><label for="rg-grade" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">المرحلة الدراسية</label>
-            <select id="rg-grade" class="field"><option>اختر المرحلة</option><option>[مرحلة من الإعدادات]</option></select>
+            <select id="rg-grade" class="field"><option value="">اختر المرحلة</option><option value="1">الصف الأول الثانوي</option><option value="2">الصف الثاني الثانوي</option><option value="3">الصف الثالث الثانوي</option></select>
           </div>
-          <button type="button" class="btn3d btn-main" style="min-height:54px;border-radius:16px;font-size:20px;margin-top:6px">إنشاء الحساب</button>
+          <sc-if value="{{hasErr}}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding:10px 14px;border-radius:12px;background:#2A1530;border:1px solid #FF6B9A;color:#FFB3CC;font-size:15px;line-height:1.6">{{err}}</div></sc-if>
+          <button type="button" onClick="{{doRegister}}" class="btn3d btn-main" style="min-height:54px;border-radius:16px;font-size:20px;margin-top:6px">إنشاء الحساب</button>
           <button type="button" onClick="{{goLogin}}" style="min-height:44px;background:none;border:0;color:#2DD4BF;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:700;cursor:pointer">لديك حساب بالفعل؟ سجّل الدخول</button>
         </div>
       </sc-if>
@@ -288,7 +292,36 @@ class Component extends DCLogic {
       };
     });
 
+    // ---- الربط بالـ API ----
+    const val = (id) => (document.getElementById(id) || {}).value || '';
+    const dest = { student: 'Student.dc.html', teacher: 'Teacher.dc.html', supervisor: 'Supervisor.dc.html' };
+    const nav = (u) => { if (window.parent !== window) window.parent.postMessage({ dcnav: u }, '*'); else location.href = u; };
+    const run = async (e, job) => {
+      if (e && e.preventDefault) e.preventDefault();
+      if (this.state && this.state.busy) return;
+      this.setState({ busy: true, err: '' });
+      try { await job(); }
+      catch (x) { this.setState({ err: x.status ? x.message : 'تعذّر الاتصال بالسيرفر، جرّب تاني' }); }
+      this.setState({ busy: false });
+    };
+    const doLogin = (e) => run(e, async () => {
+      await window.api('/auth/login', { phone: val('lg-phone').trim(), password: val('lg-pass') });
+      const me = await window.api('/me');
+      if (me.role !== role) {
+        await window.api('/auth/logout', {});
+        throw Object.assign(new Error('الحساب ده مش حساب ' + roleDefs.find((r) => r.key === role).label + '، اختار النوع الصح'), { status: 400 });
+      }
+      nav(dest[me.role]);
+    });
+    const doRegister = (e) => run(e, async () => {
+      if (!val('rg-grade')) throw Object.assign(new Error('اختار المرحلة الدراسية'), { status: 400 });
+      await window.api('/auth/register', { name: val('rg-name'), phone: val('rg-phone').trim(), password: val('rg-pass'),
+        grade: Number(val('rg-grade')), parentPhone: val('rg-parent').trim(), school: val('rg-school'), governorate: val('rg-gov') });
+      nav(dest.student);
+    });
+
     return {
+      doLogin, doRegister, hasErr: !!s.err, err: s.err || '',
       courses, reviews, roles,
       heroMove: (e) => { const p = pos(e); this.setState({ hx: p.x, hy: p.y }); },
       heroLeave: () => this.setState({ hx: 0, hy: 0 }),
@@ -298,11 +331,11 @@ class Component extends DCLogic {
       isLogin: mode === 'login',
       isRegister: mode === 'register',
       modalTitle: mode === 'login' ? 'تسجيل الدخول' : 'تسجيل حساب جديد',
-      openLogin: () => this.setState({ modal: true, mode: 'login' }),
+      openLogin: () => this.setState({ modal: true, mode: 'login', err: '' }),
       closeModal: () => this.setState({ modal: false }),
       stop: (e) => e.stopPropagation(),
-      goRegister: () => this.setState({ mode: 'register', role: 'student' }),
-      goLogin: () => this.setState({ mode: 'login' })
+      goRegister: () => this.setState({ mode: 'register', role: 'student', err: '' }),
+      goLogin: () => this.setState({ mode: 'login', err: '' })
     };
   }
 }

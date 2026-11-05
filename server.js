@@ -87,8 +87,12 @@ route('POST', '/api/auth/register', null, async ({ req, body, ip, headers }) => 
   if (!PHONE.test(body.phone)) throw new HttpError(400, 'رقم الموبايل غير صالح');
   if (String(body.password || '').length < 8) throw new HttpError(400, 'كلمة السر لازم ٨ حروف على الأقل');
   const grade = int(body.grade, 1, 3);
+  const parentPhone = String(body.parentPhone || '').trim();
+  if (!PHONE.test(parentPhone)) throw new HttpError(400, 'رقم ولي الأمر غير صالح');
+  const school = String(body.school || '').trim().slice(0, 80), governorate = String(body.governorate || '').trim().slice(0, 40);
   try {
-    const u = await one("INSERT INTO users(name,phone,pass_hash,role,grade) VALUES($1,$2,$3,'student',$4) RETURNING id", [name, body.phone, hashPw(body.password), grade]);
+    const u = await one("INSERT INTO users(name,phone,pass_hash,role,grade,parent_phone,school,governorate) VALUES($1,$2,$3,'student',$4,$5,$6,$7) RETURNING id",
+      [name, body.phone, hashPw(body.password), grade, parentPhone, school || null, governorate || null]);
     headers.push(cookieHdr(req, await newSession(u.id), 2592000));
     return { ok: true };
   } catch (e) {

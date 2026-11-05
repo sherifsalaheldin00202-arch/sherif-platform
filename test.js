@@ -22,9 +22,10 @@ const bal = async () => (await call('/api/me', { cookie: S })).j.balance;
 
 test('تسجيل ودخول وحماية الصفحات', async () => {
   assert.equal((await call('/api/me')).status, 401);
-  const r = await call('/api/auth/register', { body: { name: 'طالب تجريبي', phone: '01012345678', password: 'password123', grade: 3 } });
+  const r = await call('/api/auth/register', { body: { name: 'طالب تجريبي', phone: '01012345678', password: 'password123', grade: 3, parentPhone: '01234567890', school: 'مدرسة', governorate: 'القاهرة' } });
   assert.equal(r.status, 200); S = r.cookie;
-  assert.equal((await call('/api/auth/register', { body: { name: 'طالب', phone: '01012345678', password: 'password123', grade: 3 } })).status, 409);
+  assert.equal((await call('/api/auth/register', { body: { name: 'طالب', phone: '01111111111', password: 'password123', grade: 3, parentPhone: '123' } })).status, 400); // رقم ولي أمر غلط
+  assert.equal((await call('/api/auth/register', { body: { name: 'طالب', phone: '01012345678', password: 'password123', grade: 3, parentPhone: '01234567890', school: 'مدرسة', governorate: 'القاهرة' } })).status, 409);
   assert.equal((await call('/api/auth/login', { body: { phone: '01012345678', password: 'غلط غلط غلط' } })).status, 401);
   assert.equal((await call('/api/auth/login', { body: { phone: '01012345678', password: 'password123' } })).status, 200);
   await q("INSERT INTO users(name,phone,pass_hash,role) VALUES('مستر','01099999999',$1,'teacher')", [hashPw('teacherpass1')]);

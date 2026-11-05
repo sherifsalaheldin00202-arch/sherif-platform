@@ -11,6 +11,11 @@ CREATE TABLE IF NOT EXISTS users(
   balance INTEGER NOT NULL DEFAULT 0 CHECK(balance>=0),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now());
 
+-- أعمدة بيانات الطالب (idempotent: آمن تشغّل الملف كله تاني على قاعدة موجودة)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS parent_phone TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS school TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS governorate TEXT;
+
 CREATE TABLE IF NOT EXISTS sessions(
   token_hash TEXT PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
