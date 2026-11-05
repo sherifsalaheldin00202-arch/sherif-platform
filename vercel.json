@@ -1,0 +1,9 @@
+{
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/", "destination": "/Main.dc.html" }
+  ]
+}

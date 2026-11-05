@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الامتحانات والواجبات</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&amp;family=Tajawal:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F24;font-family:'Tajawal',sans-serif;color:#F4F6FF}
+*{box-sizing:border-box}
+a{color:#A9B3D6;text-decoration:none}
+a:hover{color:#FFC93C}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(8deg)}}
+@keyframes shine{0%{transform:translateX(-140%) skewX(-20deg)}60%,100%{transform:translateX(260%) skewX(-20deg)}}
+.fl{animation:floaty 6s ease-in-out infinite}
+.shine{animation:shine 5s ease-in-out infinite}
+.btn3d{cursor:pointer;border:0;font-family:'Cairo',sans-serif;font-weight:900;transition:transform .15s ease,box-shadow .15s ease}
+.btn3d:hover{transform:translateY(-3px)}
+.btn3d:active{transform:translateY(5px)}
+.btn-main{background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 5px 0 #B37400,0 14px 24px rgba(255,176,32,.3)}
+.btn-main:active{box-shadow:0 1px 0 #B37400}
+.btn-ghost{background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset}
+.card{padding:22px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#121A3B);border:1px solid #2A356B;box-shadow:0 10px 0 -2px #070B1A,0 26px 40px rgba(0,0,0,.4)}
+.navlink{min-height:44px;display:flex;align-items:center;font-size:17px;font-weight:500}
+:focus-visible{outline:3px solid #2DD4BF;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.fl,.shine{animation:none}}
+</style>
+</helmet>
+
+<div style="width:100%;max-width:1440px;margin:0 auto;background:#0A0F24;overflow:hidden;position:relative">
+<div aria-hidden="true" style="position:absolute;top:0;left:0;right:0;height:640px;background:radial-gradient(circle at 15% 10%,rgba(124,92,255,.3),transparent 55%),radial-gradient(circle at 90% 0%,rgba(45,212,191,.15),transparent 45%);pointer-events:none"></div>
+
+<header style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 32px;max-width:1280px;margin:0 auto">
+  <a href="Main.dc.html" style="display:flex;align-items:center;gap:12px;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px;color:#F4F6FF">
+    <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#7C5CFF,#2DD4BF);color:#0A0F24;font-size:26px;box-shadow:0 4px 0 #3B2A99">π</span>
+    [اسم المنصة]
+  </a>
+  <nav aria-label="التنقل" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 26px">
+    <a class="navlink" href="Student.dc.html#mine">محاضراتي</a>
+    <a class="navlink" href="Phase3.dc.html#compete">المنافسة</a>
+    <a class="navlink" href="Phase3.dc.html#stats">إحصائياتي</a>
+    <a href="Student.dc.html" class="btn3d btn-ghost" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:14px;font-size:15px;color:#F4F6FF">لوحة الطالب</a>
+  </nav>
+</header>
+
+<main style="position:relative;max-width:1280px;margin:0 auto;padding:24px 32px 96px">
+
+<!-- ============ LIST VIEW ============ -->
+<section style="display:{{showList}};flex-direction:column;gap:26px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span style="color:#FF6B9A;font-weight:700;font-size:16px">اختبر نفسك</span>
+    <h1 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(30px,5vw,52px);line-height:1.3;text-shadow:1px 1px 0 #3B2A99,2px 2px 0 #3B2A99,3px 3px 0 #2E2080,0 14px 24px rgba(0,0,0,.5)">الامتحانات والواجبات</h1>
+    <p style="margin:0;color:#A9B3D6;font-size:17px">كل امتحان وواجب بيضيف نقاط للوحة الأوائل.</p>
+  </div>
+  <div role="tablist" aria-label="النوع" style="display:flex;gap:10px">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="2">
+      <button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" class="btn3d" style="{{t.style}}">{{t.label}}</button>
+    </sc-for>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:24px">
+    <sc-for list="{{items}}" as="x" hint-placeholder-count="3">
+      <article class="card" style="flex:1 1 340px;max-width:100%;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <span aria-hidden="true" style="{{x.icon}}">{{x.sym}}</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <strong style="font-family:'Cairo',sans-serif;font-size:19px;line-height:1.5">{{x.title}}</strong>
+            <span style="font-size:14px;color:#A9B3D6">{{x.meta}}</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span style="{{x.badge}}">{{x.status}}</span>
+          <button type="button" onClick="{{x.act}}" disabled="{{x.off}}" class="btn3d {{x.cls}}" style="min-height:46px;padding:0 22px;border-radius:14px;font-size:16px">{{x.cta}}</button>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</section>
+
+<!-- ============ EXAM VIEW ============ -->
+<section style="display:{{showExam}};flex-direction:column;gap:22px">
+  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="color:#2DD4BF;font-weight:700;font-size:16px">جاري الامتحان</span>
+      <h1 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(26px,4vw,40px);line-height:1.4">[عنوان الامتحان]</h1>
+    </div>
+    <span role="timer" aria-label="الوقت المتبقي" dir="ltr" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:999px;background:rgba(255,107,154,.12);border:1px solid rgba(255,107,154,.5);color:#FF8FB1;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px">⏱ [٢٤:٥٩]</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div role="progressbar" aria-label="الأسئلة المجابة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ansPct}}" style="flex:1;height:10px;border-radius:999px;background:#1B2552;overflow:hidden"><div style="{{ansBar}}"></div></div>
+    <span style="font-size:14px;color:#A9B3D6">{{answered}} من {{qTotal}} مجابة</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+    <article class="card" style="flex:2 1 560px;min-width:0;display:flex;flex-direction:column;gap:20px">
+      <span style="font-size:15px;color:#FFC93C;font-weight:700">السؤال {{qNum}} من {{qTotal}}</span>
+      <p style="margin:0;font-family:'Cairo',sans-serif;font-weight:800;font-size:clamp(20px,2.6vw,26px);line-height:1.7">[نص السؤال {{qNum}} — يمكن أن يحتوي على معادلة أو صورة]</p>
+      <div role="radiogroup" aria-label="الإجابات" style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+          <button type="button" role="radio" aria-checked="{{o.on}}" onClick="{{o.pick}}" class="btn3d" style="{{o.row}}">
+            <span aria-hidden="true" style="{{o.badge}}">{{o.letter}}</span>
+            <span style="font-family:'Tajawal',sans-serif;font-weight:500;font-size:18px">[الإجابة {{o.letter}}]</span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px">
+        <button type="button" onClick="{{prevQ}}" class="btn3d btn-ghost" style="min-height:48px;padding:0 22px;border-radius:14px;font-size:16px">→ السابق</button>
+        <button type="button" onClick="{{nextQ}}" class="btn3d btn-ghost" style="min-height:48px;padding:0 22px;border-radius:14px;font-size:16px">التالي ←</button>
+      </div>
+    </article>
+    <aside class="card" style="flex:1 1 280px;display:flex;flex-direction:column;gap:16px">
+      <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px">خريطة الأسئلة</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <sc-for list="{{map}}" as="m" hint-placeholder-count="5">
+          <button type="button" aria-label="السؤال {{m.n}}" onClick="{{m.pick}}" class="btn3d" style="{{m.style}}">{{m.n}}</button>
+        </sc-for>
+      </div>
+      <button type="button" onClick="{{submit}}" class="btn3d btn-main" style="min-height:54px;border-radius:16px;font-size:18px">تسليم الامتحان</button>
+      <span style="font-size:14px;color:#A9B3D6;text-align:center">لما تسلّم مش هتقدر تعدّل إجاباتك.</span>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ RESULT VIEW ============ -->
+<section style="display:{{showResult}};flex-direction:column;align-items:center;gap:22px;text-align:center;padding-top:20px">
+  <span style="color:#FFC93C;font-weight:700;font-size:16px">النتيجة</span>
+  <div style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;width:240px;height:240px;border-radius:50%;background:linear-gradient(135deg,#6A4DF0,#2E2A9E);box-shadow:0 12px 0 #1A1470,0 30px 50px rgba(20,10,80,.55)">
+    <div aria-hidden="true" class="shine" style="position:absolute;top:0;bottom:0;width:60px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent)"></div>
+    <strong style="font-family:'Cairo',sans-serif;font-weight:900;font-size:64px;line-height:1.1;text-shadow:0 5px 0 rgba(20,10,80,.5)">{{score}}</strong>
+    <span style="font-size:17px;color:#DDD8FF">من {{qTotal}} ({{scorePct}}٪)</span>
+  </div>
+  <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(26px,4vw,38px)">{{verdict}}</h2>
+  <div class="card" style="display:flex;flex-wrap:wrap;gap:22px;align-items:center;justify-content:center;max-width:620px;width:100%">
+    <span aria-hidden="true" class="fl" style="font-size:44px;color:#FFC93C;text-shadow:0 6px 0 rgba(0,0,0,.35)">★</span>
+    <div style="display:flex;flex-direction:column;gap:4px"><strong style="font-family:'Cairo',sans-serif;font-size:26px;color:#FFC93C">+{{points}} نقطة</strong><span style="font-size:15px;color:#A9B3D6">اتضافت لرصيد نقاطك في المنافسة</span></div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center">
+    <button type="button" class="btn3d btn-main" style="min-height:52px;padding:0 26px;border-radius:14px;font-size:17px">مراجعة الإجابات</button>
+    <a href="Phase3.dc.html#compete" class="btn3d btn-ghost" style="display:inline-flex;align-items:center;min-height:52px;padding:0 26px;border-radius:14px;font-size:17px;color:#F4F6FF">شوف ترتيبك</a>
+    <button type="button" onClick="{{backList}}" class="btn3d btn-ghost" style="min-height:52px;padding:0 26px;border-radius:14px;font-size:17px">رجوع للقائمة</button>
+  </div>
+</section>
+
+</main>
+<footer style="position:relative;padding:28px 32px;border-top:1px solid #1C2552;text-align:center;color:#A9B3D6;font-size:15px">جميع الحقوق محفوظة — [اسم المنصة]</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const view = s.view || 'list';
+    const tab = s.tab || 'exam';
+    const q = s.q || 0;
+    const ans = s.ans || {};
+    const grad = (a, b) => 'linear-gradient(135deg,' + a + ',' + b + ')';
+    const set = (o) => () => this.setState(o);
+
+    const QT = 5;
+    const CORRECT = [1, 0, 2, 1, 3]; // الإجابات الصحيحة (من الباك إند في الإنتاج)
+    const letters = ['أ', 'ب', 'ج', 'د'];
+
+    const tabs = [{ k: 'exam', l: 'الامتحانات' }, { k: 'hw', l: 'الواجبات' }].map((t) => {
+      const on = tab === t.k;
+      return { label: t.l, on: on, pick: set({ tab: t.k }), style: 'min-height:46px;padding:0 26px;border-radius:14px;font-size:17px;' + (on ? 'background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 4px 0 #B37400' : 'background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset') };
+    });
+
+    const ST = {
+      open: { txt: 'متاح الآن', c: '#2DD4BF', bg: 'rgba(45,212,191,.12)', cta: 'ابدأ الامتحان', cls: 'btn-main' },
+      done: { txt: 'تم التسليم', c: '#FFC93C', bg: 'rgba(255,201,60,.12)', cta: 'عرض النتيجة', cls: 'btn-ghost' },
+      missed: { txt: 'انتهى الموعد', c: '#FF6B9A', bg: 'rgba(255,107,154,.12)', cta: 'غير متاح', cls: 'btn-ghost' }
+    };
+    const DATA = [
+      { type: 'exam', title: 'امتحان [اسم الوحدة] الأول', meta: '[٣٠] دقيقة • ٥ أسئلة • حتى [تاريخ]', sym: '✎', a: '#7C5CFF', b: '#2DD4BF', st: 'open', start: true },
+      { type: 'exam', title: 'امتحان [اسم الوحدة] الثاني', meta: 'الدرجة: [٨٥٪] • [تاريخ]', sym: '✎', a: '#FFC93C', b: '#FF7A45', st: 'done' },
+      { type: 'exam', title: 'امتحان الشهر', meta: 'انتهى في [تاريخ]', sym: '✎', a: '#8E99BA', b: '#5B6688', st: 'missed' },
+      { type: 'hw', title: 'واجب [اسم الدرس]', meta: '[١٠] أسئلة • التسليم حتى [تاريخ]', sym: '✓', a: '#2DD4BF', b: '#3B82F6', st: 'open', start: true },
+      { type: 'hw', title: 'واجب [اسم الدرس] ٢', meta: 'الدرجة: [٩٠٪]', sym: '✓', a: '#FF6B9A', b: '#FFC93C', st: 'done' }
+    ];
+    const items = DATA.filter((d) => d.type === tab).map((d) => {
+      const t = ST[d.st];
+      return {
+        title: d.title, meta: d.meta, sym: d.sym, status: t.txt, cta: d.type === 'hw' && d.st === 'open' ? 'ابدأ الواجب' : t.cta, cls: t.cls, off: d.st === 'missed',
+        icon: 'flex:none;display:flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:16px;font-family:Cairo,sans-serif;font-weight:900;font-size:30px;color:#fff;background:' + grad(d.a, d.b) + ';box-shadow:0 5px 0 rgba(0,0,0,.35);text-shadow:0 3px 0 rgba(10,15,36,.35)',
+        badge: 'display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:700;color:' + t.c + ';background:' + t.bg + ';border:1px solid ' + t.c + '66',
+        act: d.start ? () => this.setState({ view: 'exam', q: 0, ans: {} }) : () => {}
+      };
+    });
+
+    const opts = letters.map((l, i) => {
+      const on = ans[q] === i;
+      return {
+        letter: l, on: on,
+        row: 'display:flex;align-items:center;gap:14px;width:100%;min-height:60px;padding:10px 14px;border-radius:16px;color:#F4F6FF;text-align:right;' + (on ? 'background:linear-gradient(170deg,#2A2F7A,#1B2552);box-shadow:0 4px 0 #070B1A,0 0 0 2px #FFC93C inset' : 'background:#0F1634;box-shadow:0 4px 0 #070B1A,0 0 0 1px #232D5E inset'),
+        badge: 'flex:none;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;font-family:Cairo,sans-serif;font-weight:900;font-size:18px;' + (on ? 'background:' + grad('#FFE08A', '#FFB020') + ';color:#1A1200' : 'background:#0A0F24;color:#FFC93C'),
+        pick: () => this.setState({ ans: { ...ans, [q]: i } })
+      };
+    });
+
+    const map = Array.from({ length: QT }, (_, i) => {
+      const cur = i === q, a = ans[i] != null;
+      return { n: i + 1, pick: set({ q: i }), style: 'width:48px;height:48px;border-radius:12px;font-size:17px;' + (cur ? 'background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 4px 0 #B37400' : a ? 'background:' + grad('#2DD4BF', '#3B82F6') + ';color:#fff;box-shadow:0 4px 0 #1B4F8F' : 'background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset') };
+    });
+
+    const answered = Object.keys(ans).length;
+    const ansPct = Math.round(answered / QT * 100);
+    const score = CORRECT.filter((c, i) => ans[i] === c).length;
+    const scorePct = Math.round(score / QT * 100);
+    const verdict = scorePct >= 85 ? 'ممتاز! استمر 🔥' : scorePct >= 50 ? 'كويس، وتقدر تعمل أحسن' : 'محتاج تراجع الدرس وتحاول تاني';
+
+    return {
+      showList: view === 'list' ? 'flex' : 'none', showExam: view === 'exam' ? 'flex' : 'none', showResult: view === 'result' ? 'flex' : 'none',
+      tabs, items, opts, map, answered, ansPct, qTotal: QT, qNum: q + 1,
+      ansBar: 'height:100%;width:' + ansPct + '%;border-radius:999px;background:linear-gradient(90deg,#FFC93C,#FFB020)',
+      prevQ: set({ q: Math.max(0, q - 1) }), nextQ: set({ q: Math.min(QT - 1, q + 1) }),
+      submit: set({ view: 'result' }), backList: set({ view: 'list' }),
+      score, scorePct, verdict, points: score * 10
+    };
+  }
+}
+</script>
+</body>
+</html>

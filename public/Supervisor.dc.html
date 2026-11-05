@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>لوحة المشرف</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&amp;family=Tajawal:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F24;font-family:'Tajawal',sans-serif;color:#F4F6FF}
+*{box-sizing:border-box}
+a{color:#A9B3D6;text-decoration:none}
+a:hover{color:#FFC93C}
+@keyframes shine{0%{transform:translateX(-140%) skewX(-20deg)}60%,100%{transform:translateX(260%) skewX(-20deg)}}
+.shine{animation:shine 5s ease-in-out infinite}
+.btn3d{cursor:pointer;border:0;font-family:'Cairo',sans-serif;font-weight:900;transition:transform .15s ease,box-shadow .15s ease}
+.btn3d:hover{transform:translateY(-3px)}
+.btn3d:active{transform:translateY(5px)}
+.btn-main{background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 5px 0 #B37400,0 14px 24px rgba(255,176,32,.3)}
+.btn-main:active{box-shadow:0 1px 0 #B37400}
+.btn-ghost{background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset}
+.card{padding:22px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#121A3B);border:1px solid #2A356B;box-shadow:0 10px 0 -2px #070B1A,0 26px 40px rgba(0,0,0,.4)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px;border-radius:18px;background:#0F1634;border:1px solid #232D5E}
+.navlink{min-height:44px;display:flex;align-items:center;font-size:17px;font-weight:500}
+.field{width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid #2A356B;background:#0A0F24;color:#F4F6FF;font-family:'Tajawal',sans-serif;font-size:16px}
+:focus-visible{outline:3px solid #2DD4BF;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.shine{animation:none}}
+</style>
+</helmet>
+<div style="width:100%;max-width:1440px;margin:0 auto;background:#0A0F24;overflow:hidden;position:relative">
+<div aria-hidden="true" style="position:absolute;top:0;left:0;right:0;height:640px;background:radial-gradient(circle at 15% 10%,rgba(124,92,255,.3),transparent 55%),radial-gradient(circle at 90% 0%,rgba(45,212,191,.15),transparent 45%);pointer-events:none"></div>
+<header style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 32px;max-width:1280px;margin:0 auto">
+  <a href="Main.dc.html" style="display:flex;align-items:center;gap:12px;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px;color:#F4F6FF">
+    <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#7C5CFF,#2DD4BF);color:#0A0F24;font-size:26px;box-shadow:0 4px 0 #3B2A99">π</span>
+    [اسم المنصة]
+  </a>
+  <nav aria-label="التنقل" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 26px">
+    <a class="navlink" href="#charges">طلبات الشحن</a>
+    <a class="navlink" href="#students">الطلاب</a>
+    <a class="navlink" href="#tickets">الدعم</a>
+    <a class="navlink" href="#log">سجل العمليات</a>
+    <a href="Main.dc.html" class="btn3d btn-ghost" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:14px;font-size:15px;color:#F4F6FF">تسجيل الخروج</a>
+  </nav>
+</header>
+<main style="position:relative;max-width:1280px;margin:0 auto;padding:24px 32px 96px;display:flex;flex-direction:column;gap:52px">
+
+  <section style="display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="color:#2DD4BF;font-weight:700;font-size:16px">لوحة المشرف</span>
+        <h1 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(30px,5vw,52px);line-height:1.3;text-shadow:1px 1px 0 #3B2A99,2px 2px 0 #3B2A99,3px 3px 0 #2E2080,0 14px 24px rgba(0,0,0,.5)">أهلاً [اسم المشرف]</h1>
+      </div>
+      <span style="display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;background:rgba(255,201,60,.12);border:1px solid rgba(255,201,60,.45);color:#FFD76A;font-weight:700;font-size:15px">صلاحيات المشرف: الشحن • الطلاب • الدعم</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:22px">
+      <sc-for list="{{kpis}}" as="k" hint-placeholder-count="3">
+        <div class="card" style="flex:1 1 220px;display:flex;flex-direction:column;gap:6px;padding:20px">
+          <span aria-hidden="true" style="{{k.icon}}">{{k.sym}}</span>
+          <span style="font-size:15px;color:#A9B3D6">{{k.label}}</span>
+          <strong style="font-family:'Cairo',sans-serif;font-weight:900;font-size:32px;color:#FFC93C">{{k.val}}</strong>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- CHARGES -->
+  <section id="charges" style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:8px"><span style="color:#FFC93C;font-weight:700;font-size:16px">المراجعة</span><h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,44px)">طلبات شحن الرصيد</h2></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{charges}}" as="q" hint-placeholder-count="3">
+        <div class="row">
+          <span aria-hidden="true" style="flex:none;display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;font-size:22px;color:#fff;background:linear-gradient(135deg,#7C5CFF,#2DD4BF);box-shadow:0 4px 0 rgba(0,0,0,.35)">◈</span>
+          <div style="flex:1 1 200px;min-width:0;display:flex;flex-direction:column"><strong style="font-size:17px">[اسم الطالب] — {{q.amount}} ج.م</strong><span style="font-size:14px;color:#A9B3D6">{{q.method}} • رقم العملية [٠٠٠٠] • [تاريخ]</span></div>
+          <span style="{{q.badge}}">{{q.label}}</span>
+          <div style="display:{{q.waitShow}};gap:8px">
+            <button type="button" onClick="{{q.ask}}" class="btn3d btn-main" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">قبول</button>
+            <button type="button" onClick="{{q.no}}" class="btn3d btn-ghost" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">رفض</button>
+          </div>
+          <div style="display:{{q.confShow}};align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:15px;color:#FFD76A;font-weight:700">تأكيد إضافة {{q.amount}} ج.م للرصيد؟</span>
+            <button type="button" onClick="{{q.ok}}" class="btn3d btn-main" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">أيوه، أضف</button>
+            <button type="button" onClick="{{q.back}}" class="btn3d btn-ghost" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">رجوع</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- STUDENTS -->
+  <section id="students" style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:8px"><span style="color:#2DD4BF;font-weight:700;font-size:16px">الحسابات</span><h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,44px)">الطلاب</h2></div>
+    <label for="sq" style="font-size:15px;color:#A9B3D6">ابحث بالاسم أو رقم الموبايل</label>
+    <input id="sq" class="field" type="text" placeholder="01XXXXXXXXX" dir="rtl" style="max-width:420px">
+    <div role="tablist" aria-label="المرحلة" style="display:flex;flex-wrap:wrap;gap:10px">
+      <sc-for list="{{gradeTabs}}" as="g" hint-placeholder-count="4"><button type="button" role="tab" aria-selected="{{g.on}}" onClick="{{g.pick}}" class="btn3d" style="{{g.style}}">{{g.label}}</button></sc-for>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{students}}" as="s" hint-placeholder-count="4">
+        <div class="row">
+          <span aria-hidden="true" style="display:flex;align-items:flex-end;justify-content:center;overflow:hidden;width:46px;height:46px;border-radius:50%;background:#2A356B"><svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="38" r="19" fill="#3A4690"></circle><path d="M12 100c0-26 17-42 38-42s38 16 38 42z" fill="#3A4690"></path></svg></span>
+          <div style="flex:1 1 180px;min-width:0;display:flex;flex-direction:column"><strong style="font-size:17px">[اسم الطالب]</strong><span dir="ltr" style="font-size:14px;color:#A9B3D6;text-align:right">[01XXXXXXXXX] • {{s.grade}}</span></div>
+          <span style="{{s.badge}}">{{s.label}}</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <button type="button" onClick="{{s.reset}}" class="btn3d btn-ghost" style="min-height:44px;padding:0 16px;border-radius:12px;font-size:15px">{{s.resetLabel}}</button>
+            <button type="button" onClick="{{s.toggle}}" class="btn3d btn-ghost" style="min-height:44px;padding:0 16px;border-radius:12px;font-size:15px">{{s.toggleLabel}}</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- TICKETS -->
+  <section id="tickets" style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:8px"><span style="color:#FF6B9A;font-weight:700;font-size:16px">الدعم</span><h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,44px)">شكاوى الطلاب</h2></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{tickets}}" as="t" hint-placeholder-count="3">
+        <div class="row">
+          <div style="flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:2px"><strong style="font-size:17px">{{t.kind}}</strong><span style="font-size:14px;color:#A9B3D6">[اسم الطالب] • [تاريخ] — [نص الشكوى]</span></div>
+          <span style="{{t.badge}}">{{t.label}}</span>
+          <button type="button" onClick="{{t.act}}" class="btn3d btn-main" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px;display:{{t.show}}">تم الحل</button>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- LOG -->
+  <section id="log" style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:8px"><span style="color:#7C5CFF;font-weight:700;font-size:16px">الشفافية</span><h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,44px)">سجل العمليات</h2><p style="margin:0;color:#A9B3D6;font-size:16px">كل عملية على الرصيد أو الحسابات بتتسجّل باسم اللي عملها ووقتها.</p></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{log}}" as="l" hint-placeholder-count="4"><div class="row" style="justify-content:space-between"><span style="font-size:16px">{{l.txt}}</span><span style="font-size:14px;color:#A9B3D6">[اسم المشرف] • [تاريخ ووقت]</span></div></sc-for>
+    </div>
+  </section>
+</main>
+<footer style="position:relative;padding:28px 32px;border-top:1px solid #1C2552;text-align:center;color:#A9B3D6;font-size:15px">جميع الحقوق محفوظة — [اسم المنصة]</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const grad = (a, b) => 'linear-gradient(135deg,' + a + ',' + b + ')';
+    const pill = (c) => 'display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:700;color:' + c + ';background:' + c + '1F;border:1px solid ' + c + '66';
+    const chip = (on) => 'min-height:44px;padding:0 20px;border-radius:14px;font-size:16px;' + (on ? 'background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 4px 0 #B37400' : 'background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset');
+
+    const kpis = [
+      { sym: '◈', label: 'طلبات شحن معلّقة', val: '[٠]', a: '#FF6B9A', b: '#FFC93C' },
+      { sym: '☻', label: 'طلاب جدد النهارده', val: '[٠]', a: '#7C5CFF', b: '#2DD4BF' },
+      { sym: '?', label: 'شكاوى مفتوحة', val: '[٠]', a: '#2DD4BF', b: '#3B82F6' }
+    ].map((k) => ({ ...k, icon: 'display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:14px;font-size:24px;color:#fff;background:' + grad(k.a, k.b) + ';box-shadow:0 4px 0 rgba(0,0,0,.35)' }));
+
+    // طلبات الشحن: wait -> confirm -> ok / no (تأكيد قبل أي إضافة رصيد)
+    const cs = s.cs || {};
+    const chdef = [{ amount: '[٢٠٠]', method: 'فودافون كاش' }, { amount: '[٥٠٠]', method: 'إنستا باي' }, { amount: '[١٠٠]', method: 'فوري' }];
+    const charges = chdef.map((c, i) => {
+      const st = cs[i] || 'wait';
+      const col = st === 'ok' ? '#2DD4BF' : st === 'no' ? '#FF6B9A' : '#FFC93C';
+      const set = (v) => () => this.setState({ cs: { ...cs, [i]: v } });
+      return { ...c, badge: pill(col), label: st === 'ok' ? 'تم القبول' : st === 'no' ? 'مرفوض' : st === 'confirm' ? 'في انتظار تأكيدك' : 'قيد المراجعة',
+        waitShow: st === 'wait' ? 'flex' : 'none', confShow: st === 'confirm' ? 'flex' : 'none', ask: set('confirm'), ok: set('ok'), no: set('no'), back: set('wait') };
+    });
+
+    const gsel = s.grade || 'all';
+    const gradeTabs = [{ k: 'all', l: 'الكل' }, { k: '1', l: 'الصف الأول' }, { k: '2', l: 'الصف الثاني' }, { k: '3', l: 'الصف الثالث' }].map((g) => ({ label: g.l, on: gsel === g.k, style: chip(gsel === g.k), pick: () => this.setState({ grade: g.k }) }));
+    const GN = { '1': 'الصف الأول الثانوي', '2': 'الصف الثاني الثانوي', '3': 'الصف الثالث الثانوي' };
+    const susp = s.susp || {}, rst = s.rst || {};
+    const sdef = [{ id: 0, g: '3' }, { id: 1, g: '3' }, { id: 2, g: '2' }, { id: 3, g: '1' }];
+    const students = sdef.filter((x) => gsel === 'all' || x.g === gsel).map((x) => {
+      const off = !!susp[x.id], done = !!rst[x.id];
+      return { grade: GN[x.g], badge: pill(off ? '#FF6B9A' : '#2DD4BF'), label: off ? 'موقوف' : 'نشط',
+        resetLabel: done ? '✓ تم مسح الأجهزة' : 'مسح الأجهزة', toggleLabel: off ? 'تفعيل الحساب' : 'إيقاف الحساب',
+        reset: () => this.setState({ rst: { ...rst, [x.id]: true } }), toggle: () => this.setState({ susp: { ...susp, [x.id]: !off } }) };
+    });
+
+    const ts = s.ts || {};
+    const tdef = ['مشكلة في تفعيل كود', 'الفيديو مش بيشتغل', 'الرصيد ما اتضافش'];
+    const tickets = tdef.map((k, i) => {
+      const d = !!ts[i];
+      return { kind: k, badge: pill(d ? '#2DD4BF' : '#FFC93C'), label: d ? 'تم الحل' : 'مفتوحة', show: d ? 'none' : 'inline-flex', act: () => this.setState({ ts: { ...ts, [i]: true } }) };
+    });
+
+    const log = [{ txt: 'قبول شحن [٢٠٠] ج.م للطالب [الاسم]' }, { txt: 'مسح أجهزة الطالب [الاسم]' }, { txt: 'إيقاف حساب الطالب [الاسم]' }, { txt: 'رفض طلب شحن [الاسم]' }];
+
+    return { kpis, charges, gradeTabs, students, tickets, log };
+  }
+}
+</script>
+</body>
+</html>

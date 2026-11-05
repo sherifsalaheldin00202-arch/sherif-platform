@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>مشغّل المحاضرة</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&amp;family=Tajawal:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F24;font-family:'Tajawal',sans-serif;color:#F4F6FF}
+*{box-sizing:border-box}
+a{color:#A9B3D6;text-decoration:none}
+a:hover{color:#FFC93C}
+@keyframes drift{0%{transform:translate(0,0)}25%{transform:translate(55vw,10px)}50%{transform:translate(20vw,120px)}75%{transform:translate(60vw,60px)}100%{transform:translate(0,0)}}
+@keyframes pulse{0%,100%{box-shadow:0 8px 0 #B37400,0 0 0 0 rgba(255,201,60,.5)}50%{box-shadow:0 8px 0 #B37400,0 0 0 22px rgba(255,201,60,0)}}
+@keyframes shine{0%{transform:translateX(-140%) skewX(-20deg)}60%,100%{transform:translateX(260%) skewX(-20deg)}}
+.wm{animation:drift 24s linear infinite}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+.shine{animation:shine 5s ease-in-out infinite}
+.btn3d{cursor:pointer;border:0;font-family:'Cairo',sans-serif;font-weight:900;transition:transform .15s ease,box-shadow .15s ease}
+.btn3d:hover{transform:translateY(-3px)}
+.btn3d:active{transform:translateY(5px)}
+.btn-main{background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 5px 0 #B37400,0 14px 24px rgba(255,176,32,.3)}
+.btn-main:active{box-shadow:0 1px 0 #B37400}
+.btn-ghost{background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset}
+.btn-ghost:active{box-shadow:0 1px 0 #05081A,0 0 0 1px #2A356B inset}
+.card{padding:22px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#121A3B);border:1px solid #2A356B;box-shadow:0 10px 0 -2px #070B1A,0 26px 40px rgba(0,0,0,.4)}
+.navlink{min-height:44px;display:flex;align-items:center;font-size:17px;font-weight:500}
+.field{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #2A356B;background:#0A0F24;color:#F4F6FF;font-family:'Tajawal',sans-serif;font-size:16px;line-height:1.7}
+:focus-visible{outline:3px solid #2DD4BF;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.wm,.pulse,.shine{animation:none}}
+</style>
+</helmet>
+
+<div style="width:100%;max-width:1440px;margin:0 auto;background:#0A0F24;overflow:hidden;position:relative">
+<div aria-hidden="true" style="position:absolute;top:0;left:0;right:0;height:640px;background:radial-gradient(circle at 15% 10%,rgba(124,92,255,.3),transparent 55%),radial-gradient(circle at 90% 0%,rgba(45,212,191,.15),transparent 45%);pointer-events:none"></div>
+
+<header style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 32px;max-width:1280px;margin:0 auto">
+  <a href="Main.dc.html" style="display:flex;align-items:center;gap:12px;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px;color:#F4F6FF">
+    <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#7C5CFF,#2DD4BF);color:#0A0F24;font-size:26px;box-shadow:0 4px 0 #3B2A99">π</span>
+    [اسم المنصة]
+  </a>
+  <nav aria-label="التنقل" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 26px">
+    <a class="navlink" href="Student.dc.html#mine">محاضراتي</a>
+    <a class="navlink" href="Phase3.dc.html#compete">المنافسة</a>
+    <a class="navlink" href="Phase3.dc.html#stats">إحصائياتي</a>
+    <a href="Student.dc.html" class="btn3d btn-ghost" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:14px;font-size:15px;color:#F4F6FF">لوحة الطالب</a>
+  </nav>
+</header>
+
+<main style="position:relative;max-width:1280px;margin:0 auto;padding:16px 32px 96px">
+  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="color:#2DD4BF;font-weight:700;font-size:16px">[اسم الكورس] ‹ [الوحدة]</span>
+      <h1 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(26px,4vw,40px);line-height:1.4;text-shadow:1px 1px 0 #3B2A99,2px 2px 0 #3B2A99,0 12px 22px rgba(0,0,0,.5)">{{cur.title}}</h1>
+    </div>
+    <span style="display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;background:rgba(255,201,60,.12);border:1px solid rgba(255,201,60,.45);color:#FFD76A;font-weight:700;font-size:16px">{{doneCount}} من {{total}} دروس مكتملة</span>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start">
+
+    <!-- PLAYER COLUMN -->
+    <div style="flex:2 1 600px;min-width:0;display:flex;flex-direction:column;gap:22px">
+      <div style="perspective:1400px">
+        <div style="position:relative;overflow:hidden;aspect-ratio:16/9;border-radius:26px;background:linear-gradient(135deg,#2E2A9E,#0F1634 70%);border:1px solid #2A356B;box-shadow:0 12px 0 -2px #070B1A,0 30px 50px rgba(0,0,0,.55)">
+          <div aria-hidden="true" class="shine" style="position:absolute;top:0;bottom:0;width:80px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent)"></div>
+          <span aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(90px,16vw,200px);color:rgba(255,255,255,.07)">{{cur.sym}}</span>
+          <!-- ضع هنا مشغّل الفيديو الفعلي (iframe / video بروابط موقّعة) -->
+          <span aria-hidden="true" class="wm" style="position:absolute;top:8%;right:4%;padding:4px 12px;border-radius:8px;background:rgba(10,15,36,.35);color:rgba(255,255,255,.55);font-size:14px;pointer-events:none">[اسم الطالب] • [رقم الهاتف]</span>
+          <button type="button" aria-label="{{playLabel}}" onClick="{{togglePlay}}" class="btn3d btn-main pulse" style="position:absolute;top:50%;left:50%;margin:-48px 0 0 -48px;width:96px;height:96px;border-radius:50%;font-size:38px;display:{{playShow}}">▶</button>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 18px;background:linear-gradient(180deg,transparent,rgba(5,8,26,.92));display:flex;flex-direction:column;gap:10px">
+            <div role="progressbar" aria-label="تقدم الفيديو" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{vidPct}}" style="height:8px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden"><div style="{{vidBar}}"></div></div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <button type="button" aria-label="{{playLabel}}" onClick="{{togglePlay}}" class="btn3d btn-ghost" style="width:44px;height:44px;border-radius:12px;font-size:16px">{{playIcon}}</button>
+                <span dir="ltr" style="font-size:15px;color:#DDE3F4">{{cur.time}}</span>
+              </div>
+              <div role="radiogroup" aria-label="سرعة التشغيل" style="display:flex;gap:6px">
+                <sc-for list="{{speeds}}" as="sp" hint-placeholder-count="4">
+                  <button type="button" role="radio" aria-checked="{{sp.on}}" onClick="{{sp.pick}}" class="btn3d" style="{{sp.style}}">{{sp.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center">
+        <button type="button" onClick="{{prev}}" class="btn3d btn-ghost" style="min-height:48px;padding:0 22px;border-radius:14px;font-size:16px">→ الدرس السابق</button>
+        <button type="button" onClick="{{markDone}}" class="btn3d btn-main" style="min-height:52px;padding:0 28px;border-radius:14px;font-size:17px">{{doneLabel}}</button>
+        <button type="button" onClick="{{next}}" class="btn3d btn-ghost" style="min-height:48px;padding:0 22px;border-radius:14px;font-size:16px">الدرس التالي ←</button>
+      </div>
+
+      <!-- TABS -->
+      <article class="card">
+        <div role="tablist" aria-label="تفاصيل الدرس" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px">
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+            <button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" class="btn3d" style="{{t.style}}">{{t.label}}</button>
+          </sc-for>
+        </div>
+        <div role="tabpanel" style="display:{{showAbout}};color:#D5DBF2;font-size:17px;line-height:1.9">[وصف الدرس: بتتعلم إيه في الدرس ده، والمتطلبات قبل ما تبدأ]</div>
+        <div role="tabpanel" style="display:{{showFiles}};flex-direction:column;gap:12px">
+          <sc-for list="{{files}}" as="f" hint-placeholder-count="2">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px;border-radius:18px;background:#0F1634;border:1px solid #232D5E">
+              <span aria-hidden="true" style="{{f.icon}}">{{f.ext}}</span>
+              <div style="flex:1 1 180px;min-width:0;display:flex;flex-direction:column"><strong style="font-family:'Cairo',sans-serif;font-size:17px">{{f.name}}</strong><span style="font-size:14px;color:#A9B3D6">[الحجم]</span></div>
+              <button type="button" class="btn3d btn-ghost" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">فتح</button>
+            </div>
+          </sc-for>
+        </div>
+        <div role="tabpanel" style="display:{{showNotes}};flex-direction:column;gap:12px">
+          <label for="note" style="font-size:15px;color:#A9B3D6">اكتب ملاحظاتك على الدرس</label>
+          <textarea id="note" class="field" rows="5" placeholder="مثلاً: راجع القانون عند الدقيقة ١٢"></textarea>
+          <button type="button" class="btn3d btn-main" style="align-self:flex-start;min-height:46px;padding:0 24px;border-radius:12px;font-size:16px">حفظ الملاحظة</button>
+        </div>
+      </article>
+    </div>
+
+    <!-- LESSONS SIDEBAR -->
+    <aside class="card" style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:24px">محتوى الكورس</h2>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div role="progressbar" aria-label="نسبة إكمال الكورس" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{coursePct}}" style="flex:1;height:10px;border-radius:999px;background:#1B2552;overflow:hidden"><div style="{{courseBar}}"></div></div>
+          <span style="font-size:14px;color:#A9B3D6;min-width:38px;text-align:left">{{coursePct}}٪</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{lessons}}" as="l" hint-placeholder-count="5">
+          <button type="button" onClick="{{l.pick}}" aria-current="{{l.current}}" class="btn3d" style="{{l.row}}">
+            <span aria-hidden="true" style="{{l.badge}}">{{l.mark}}</span>
+            <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:right"><strong style="font-family:'Cairo',sans-serif;font-size:16px;line-height:1.5;font-weight:800">{{l.title}}</strong><span style="font-size:13px;color:#A9B3D6;font-family:'Tajawal',sans-serif;font-weight:500">{{l.meta}}</span></span>
+          </button>
+        </sc-for>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer style="position:relative;padding:28px 32px;border-top:1px solid #1C2552;text-align:center;color:#A9B3D6;font-size:15px">جميع الحقوق محفوظة — [اسم المنصة]</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const idx = s.idx == null ? 1 : s.idx;
+    const playing = !!s.playing;
+    const speed = s.speed || '1x';
+    const tab = s.tab || 'about';
+    const done = s.done || { 0: true };
+    const grad = (a, b) => 'linear-gradient(135deg,' + a + ',' + b + ')';
+
+    const L = [
+      { title: 'مقدمة الوحدة', sym: '∑', time: '٠٠:٠٠ / ١٠:٢٠', min: '١٠ د', a: '#7C5CFF', b: '#2DD4BF' },
+      { title: 'الدرس الأول: [العنوان]', sym: '∫', time: '٠٠:٠٠ / ٢٢:٤٠', min: '٢٣ د', a: '#FF6B9A', b: '#FFC93C' },
+      { title: 'الدرس الثاني: [العنوان]', sym: '∠', time: '٠٠:٠٠ / ١٨:١٥', min: '١٨ د', a: '#2DD4BF', b: '#3B82F6' },
+      { title: 'الدرس الثالث: [العنوان]', sym: 'π', time: '٠٠:٠٠ / ٢٥:٠٠', min: '٢٥ د', a: '#FFC93C', b: '#FF7A45' },
+      { title: 'امتحان الوحدة', sym: '✎', time: '', min: '١٥ سؤال', a: '#8E99BA', b: '#5B6688' }
+    ];
+    const total = L.length;
+    const last = total - 1;
+    const go = (i) => () => this.setState({ idx: Math.max(0, Math.min(last, i)), playing: false });
+
+    const lessons = L.map((l, i) => {
+      const on = i === idx;
+      const d = !!done[i];
+      return {
+        ...l,
+        current: on ? 'true' : 'false',
+        mark: d ? '✓' : on ? '▶' : String(i + 1),
+        meta: d ? 'مكتمل • ' + l.min : l.min,
+        row: 'display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:16px;color:#F4F6FF;text-align:right;' + (on ? 'background:linear-gradient(170deg,#2A2F7A,#1B2552);box-shadow:0 4px 0 #070B1A,0 0 0 2px #FFC93C inset' : 'background:#0F1634;box-shadow:0 4px 0 #070B1A,0 0 0 1px #232D5E inset'),
+        badge: 'flex:none;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;font-family:Cairo,sans-serif;font-weight:900;font-size:17px;' + (d ? 'background:' + grad('#2DD4BF', '#3B82F6') + ';color:#fff' : on ? 'background:' + grad('#FFE08A', '#FFB020') + ';color:#1A1200' : 'background:#0A0F24;color:#FFC93C'),
+        pick: go(i)
+      };
+    });
+
+    const doneCount = Object.keys(done).filter((k) => done[k]).length;
+    const coursePct = Math.round(doneCount / total * 100);
+    const vidPct = playing ? 35 : 0;
+    const bar = (p) => 'height:100%;width:' + p + '%;border-radius:999px;background:linear-gradient(90deg,#FFC93C,#FFB020)';
+
+    const speeds = ['0.75x', '1x', '1.25x', '1.5x'].map((v) => {
+      const on = speed === v;
+      return { label: v, on: on, style: 'min-height:36px;padding:0 12px;border-radius:10px;font-size:14px;' + (on ? 'background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 3px 0 #B37400' : 'background:#0A0F24;color:#F4F6FF;box-shadow:0 3px 0 #05081A,0 0 0 1px #2A356B inset'), pick: () => this.setState({ speed: v }) };
+    });
+
+    const tdef = [{ k: 'about', l: 'عن الدرس' }, { k: 'files', l: 'الملفات المرفقة' }, { k: 'notes', l: 'ملاحظاتي' }];
+    const tabs = tdef.map((t) => {
+      const on = tab === t.k;
+      return { label: t.l, on: on, style: 'min-height:44px;padding:0 20px;border-radius:14px;font-size:16px;' + (on ? 'background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 4px 0 #B37400' : 'background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset'), pick: () => this.setState({ tab: t.k }) };
+    });
+
+    const fdef = [{ name: 'ملزمة الدرس', ext: 'PDF', a: '#FF6B9A', b: '#FF7A45' }, { name: 'تمارين إضافية', ext: 'PDF', a: '#7C5CFF', b: '#2DD4BF' }];
+    const files = fdef.map((f) => ({ ...f, icon: 'display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:14px;font-family:Cairo,sans-serif;font-weight:900;font-size:15px;color:#fff;background:' + grad(f.a, f.b) + ';box-shadow:0 4px 0 rgba(0,0,0,.35)' }));
+
+    return {
+      cur: L[idx], lessons, doneCount, total, coursePct, speeds, tabs, files,
+      courseBar: bar(coursePct), vidPct, vidBar: bar(vidPct),
+      playLabel: playing ? 'إيقاف مؤقت' : 'تشغيل', playIcon: playing ? 'Ⅱ' : '▶', playShow: playing ? 'none' : 'flex',
+      togglePlay: () => this.setState({ playing: !playing }),
+      doneLabel: done[idx] ? '✓ تم إكمال الدرس' : 'تم، أكملت الدرس',
+      markDone: () => this.setState({ done: { ...done, [idx]: true } }),
+      prev: go(idx - 1), next: go(idx + 1),
+      showAbout: tab === 'about' ? 'block' : 'none', showFiles: tab === 'files' ? 'flex' : 'none', showNotes: tab === 'notes' ? 'flex' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

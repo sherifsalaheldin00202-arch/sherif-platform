@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تفاصيل الكورس</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&amp;family=Tajawal:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F24;font-family:'Tajawal',sans-serif;color:#F4F6FF}
+*{box-sizing:border-box}
+a{color:#A9B3D6;text-decoration:none}
+a:hover{color:#FFC93C}
+@keyframes shine{0%{transform:translateX(-140%) skewX(-20deg)}60%,100%{transform:translateX(260%) skewX(-20deg)}}
+.shine{animation:shine 5s ease-in-out infinite}
+.btn3d{cursor:pointer;border:0;font-family:'Cairo',sans-serif;font-weight:900;transition:transform .15s ease,box-shadow .15s ease}
+.btn3d:hover{transform:translateY(-3px)}
+.btn3d:active{transform:translateY(5px)}
+.btn-main{background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 5px 0 #B37400,0 14px 24px rgba(255,176,32,.3)}
+.btn-main:active{box-shadow:0 1px 0 #B37400}
+.btn-ghost{background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset}
+.card{padding:22px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#121A3B);border:1px solid #2A356B;box-shadow:0 10px 0 -2px #070B1A,0 26px 40px rgba(0,0,0,.4)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px;border-radius:18px;background:#0F1634;border:1px solid #232D5E}
+.navlink{min-height:44px;display:flex;align-items:center;font-size:17px;font-weight:500}
+.field{width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid #2A356B;background:#0A0F24;color:#F4F6FF;font-family:'Tajawal',sans-serif;font-size:16px}
+:focus-visible{outline:3px solid #2DD4BF;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.shine{animation:none}}
+</style>
+</helmet>
+<div style="width:100%;max-width:1440px;margin:0 auto;background:#0A0F24;overflow:hidden;position:relative">
+<div aria-hidden="true" style="position:absolute;top:0;left:0;right:0;height:640px;background:radial-gradient(circle at 15% 10%,rgba(124,92,255,.3),transparent 55%),radial-gradient(circle at 90% 0%,rgba(45,212,191,.15),transparent 45%);pointer-events:none"></div>
+<header style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 32px;max-width:1280px;margin:0 auto">
+  <a href="Main.dc.html" style="display:flex;align-items:center;gap:12px;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px;color:#F4F6FF">
+    <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#7C5CFF,#2DD4BF);color:#0A0F24;font-size:26px;box-shadow:0 4px 0 #3B2A99">π</span>
+    [اسم المنصة]
+  </a>
+  <nav aria-label="التنقل" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 26px">
+    <a class="navlink" href="Main.dc.html#courses">الكورسات</a>
+    <a class="navlink" href="#plan">محتوى الكورس</a>
+    <a class="navlink" href="#reviews">آراء الطلاب</a>
+    <a href="Student.dc.html" class="btn3d btn-ghost" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:14px;font-size:15px;color:#F4F6FF">لوحة الطالب</a>
+  </nav>
+</header>
+<main style="position:relative;max-width:1280px;margin:0 auto;padding:16px 32px 96px">
+  <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+
+    <div style="flex:2 1 560px;min-width:0;display:flex;flex-direction:column;gap:40px">
+      <!-- HERO -->
+      <section style="display:flex;flex-direction:column;gap:16px">
+        <span style="color:#2DD4BF;font-weight:700;font-size:16px">[المرحلة الدراسية] ‹ [المادة]</span>
+        <h1 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(30px,5vw,50px);line-height:1.35;text-shadow:1px 1px 0 #3B2A99,2px 2px 0 #3B2A99,3px 3px 0 #2E2080,0 14px 24px rgba(0,0,0,.5)">[اسم الكورس]</h1>
+        <p style="margin:0;color:#C5CCE8;font-size:18px;line-height:1.9">[وصف مختصر للكورس: لمين، وهيحقق إيه، وطريقة الشرح.]</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <sc-for list="{{facts}}" as="f" hint-placeholder-count="4"><span style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border-radius:999px;background:rgba(255,201,60,.12);border:1px solid rgba(255,201,60,.45);color:#FFD76A;font-weight:700;font-size:15px"><span aria-hidden="true">{{f.sym}}</span>{{f.txt}}</span></sc-for>
+        </div>
+      </section>
+
+      <!-- LEARN -->
+      <section class="card">
+        <h2 style="margin:0 0 16px;font-family:'Cairo',sans-serif;font-weight:900;font-size:26px">هتتعلم إيه؟</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:14px 28px">
+          <sc-for list="{{learn}}" as="l" hint-placeholder-count="4"><span style="flex:1 1 280px;display:flex;gap:10px;font-size:17px;line-height:1.7"><span aria-hidden="true" style="color:#2DD4BF;font-weight:900">✓</span>{{l}}</span></sc-for>
+        </div>
+      </section>
+
+      <!-- CURRICULUM -->
+      <section id="plan" style="display:flex;flex-direction:column;gap:16px">
+        <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(26px,4vw,38px)">محتوى الكورس</h2>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+            <button type="button" aria-expanded="{{r.exp}}" onClick="{{r.act}}" class="btn3d" style="{{r.style}}">
+              <span aria-hidden="true" style="{{r.badge}}">{{r.icon}}</span>
+              <span style="flex:1;min-width:0;text-align:right;font-family:'Cairo',sans-serif;font-size:{{r.fs}}px;font-weight:{{r.fw}}">{{r.title}}</span>
+              <span style="font-family:'Tajawal',sans-serif;font-weight:500;font-size:14px;color:{{r.mc}}">{{r.meta}}</span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- TEACHER -->
+      <section class="card" style="display:flex;flex-wrap:wrap;align-items:center;gap:20px">
+        <span aria-hidden="true" style="display:flex;align-items:flex-end;justify-content:center;overflow:hidden;width:96px;height:96px;border-radius:50%;background:linear-gradient(160deg,#2A356B,#151D3F);border:4px solid #7C5CFF;box-shadow:0 10px 20px rgba(0,0,0,.5)"><svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="38" r="19" fill="#3A4690"></circle><path d="M12 100c0-26 17-42 38-42s38 16 38 42z" fill="#3A4690"></path></svg></span>
+        <div style="flex:1 1 280px;display:flex;flex-direction:column;gap:6px"><span style="color:#2DD4BF;font-weight:700;font-size:15px">المدرّس</span><strong style="font-family:'Cairo',sans-serif;font-size:24px">مستر [الاسم]</strong><p style="margin:0;color:#C5CCE8;font-size:16px;line-height:1.8">[نبذة عن المدرّس وخبرته]</p></div>
+      </section>
+
+      <!-- REVIEWS -->
+      <section id="reviews" style="display:flex;flex-direction:column;gap:16px">
+        <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(26px,4vw,38px)">آراء الطلاب</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:20px">
+          <sc-for list="{{reviews}}" as="v" hint-placeholder-count="2">
+            <article class="card" style="flex:1 1 280px;display:flex;flex-direction:column;gap:12px">
+              <span aria-label="تقييم ٥ من ٥" style="color:#FFC93C;font-size:20px;letter-spacing:2px">★★★★★</span>
+              <p style="margin:0;color:#D5DBF2;font-size:16px;line-height:1.8">[تعليق الطالب على الكورس]</p>
+              <div style="display:flex;align-items:center;gap:10px"><span aria-hidden="true" style="{{v.avatar}}">{{v.i}}</span><strong>[اسم الطالب]</strong></div>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+    </div>
+
+    <!-- BUY CARD -->
+    <aside style="flex:1 1 340px;min-width:0;position:sticky;top:16px;display:flex;flex-direction:column;gap:18px" class="card">
+      <div style="position:relative;overflow:hidden;height:190px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7C5CFF,#2DD4BF);box-shadow:0 8px 0 rgba(0,0,0,.3)">
+        <div aria-hidden="true" class="shine" style="position:absolute;top:0;bottom:0;width:70px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent)"></div>
+        <span aria-hidden="true" style="font-family:'Cairo',sans-serif;font-weight:900;font-size:110px;line-height:1;color:#fff;text-shadow:0 8px 0 rgba(10,15,36,.35),0 22px 30px rgba(10,15,36,.45)">∑</span>
+        <span style="position:absolute;top:12px;right:12px;padding:5px 12px;border-radius:999px;background:rgba(10,15,36,.82);font-size:14px;font-weight:700">[المرحلة الدراسية]</span>
+      </div>
+      <strong style="font-family:'Cairo',sans-serif;font-weight:900;font-size:38px;color:#FFC93C">[السعر] ج.م</strong>
+      <button type="button" onClick="{{buy}}" class="btn3d btn-main" style="min-height:56px;border-radius:16px;font-size:19px">{{buyLabel}}</button>
+      <span style="display:{{lowShow}};font-size:14px;color:#FF8FB1;text-align:center">رصيدك الحالي [الرصيد] ج.م مش كفاية. <a href="Phase3.dc.html#pay" style="color:#FFD76A;text-decoration:underline">اشحن رصيدك</a></span>
+      <div style="display:flex;align-items:center;gap:12px;color:#8E99BA;font-size:14px"><span style="flex:1;height:1px;background:#2A356B"></span>أو<span style="flex:1;height:1px;background:#2A356B"></span></div>
+      <label for="kc" style="font-size:15px;color:#A9B3D6">معاك كود تفعيل؟</label>
+      <div style="display:flex;gap:10px">
+        <input id="kc" class="field" type="text" dir="ltr" autocomplete="off" placeholder="XXXXXXXXXXXXXXX" style="flex:1;min-width:0;text-align:center;letter-spacing:2px">
+        <button type="button" class="btn3d btn-ghost" style="min-height:46px;padding:0 18px;border-radius:12px;font-size:16px">تفعيل</button>
+      </div>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;color:#C5CCE8;font-size:16px">
+        <sc-for list="{{perks}}" as="p" hint-placeholder-count="4"><li style="display:flex;gap:10px"><span aria-hidden="true" style="color:#2DD4BF;font-weight:900">✓</span>{{p}}</li></sc-for>
+      </ul>
+    </aside>
+  </div>
+</main>
+<footer style="position:relative;padding:28px 32px;border-top:1px solid #1C2552;text-align:center;color:#A9B3D6;font-size:15px">جميع الحقوق محفوظة — [اسم المنصة]</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const open = s.open || { 0: true };
+    const bought = !!s.bought;
+    const grad = (a, b) => 'linear-gradient(135deg,' + a + ',' + b + ')';
+
+    const facts = [
+      { sym: '▶', txt: '[٠٠] درس' }, { sym: '⏱', txt: '[٠٠] ساعة' },
+      { sym: '☻', txt: '[٠٠٠] طالب' }, { sym: '★', txt: '[٤٫٨] تقييم' }
+    ];
+    const learn = ['[هدف تعليمي ١]', '[هدف تعليمي ٢]', '[هدف تعليمي ٣]', '[هدف تعليمي ٤]'];
+    const perks = ['مشاهدة غير محدودة طول فترة الكورس', 'ملازم وتمارين PDF مع كل درس', 'امتحانات وواجبات بتحسب نقاطك', 'تقرير أسبوعي لولي الأمر'];
+
+    const units = [
+      { t: 'الوحدة الأولى: [العنوان]', lessons: [{ t: 'مقدمة الوحدة', m: '١٠ د', free: true }, { t: 'الدرس الأول', m: '٢٢ د' }, { t: 'الدرس الثاني', m: '١٨ د' }] },
+      { t: 'الوحدة الثانية: [العنوان]', lessons: [{ t: 'الدرس الأول', m: '٢٥ د' }, { t: 'الدرس الثاني', m: '٢٠ د' }] },
+      { t: 'الوحدة الثالثة: [العنوان]', lessons: [{ t: 'الدرس الأول', m: '٢٣ د' }, { t: 'امتحان الوحدة', m: '١٥ سؤال' }] }
+    ];
+    const rows = [];
+    units.forEach((u, ui) => {
+      const on = !!open[ui];
+      rows.push({
+        title: u.t, meta: u.lessons.length + ' دروس', icon: on ? '−' : '+', exp: on ? 'true' : 'false', fs: 19, fw: 800, mc: '#A9B3D6',
+        style: 'display:flex;align-items:center;gap:12px;width:100%;padding:14px;border-radius:16px;color:#F4F6FF;background:linear-gradient(170deg,#1B2552,#121A3B);box-shadow:0 4px 0 #070B1A,0 0 0 1px #2A356B inset',
+        badge: 'flex:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;font-size:22px;background:#0A0F24;color:#FFC93C',
+        act: () => this.setState({ open: { ...open, [ui]: !on } })
+      });
+      u.lessons.forEach((l) => {
+        const can = bought || l.free;
+        rows.push({
+          title: l.t, meta: l.free && !bought ? 'مجاني • ' + l.m : l.m, icon: can ? '▶' : '🔒', exp: 'false', fs: 16, fw: 600, mc: l.free && !bought ? '#2DD4BF' : '#A9B3D6',
+          style: 'display:' + (on ? 'flex' : 'none') + ';align-items:center;gap:12px;width:calc(100% - 28px);margin-right:28px;padding:10px 14px;border-radius:14px;color:#F4F6FF;background:#0F1634;box-shadow:0 0 0 1px #232D5E inset;cursor:default',
+          badge: 'flex:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;font-size:14px;color:' + (can ? '#1A1200' : '#8E99BA') + ';background:' + (can ? grad('#FFE08A', '#FFB020') : '#0A0F24'),
+          act: () => {}
+        });
+      });
+    });
+
+    const reviews = [grad('#7C5CFF', '#2DD4BF'), grad('#FF6B9A', '#FFC93C')].map((g, i) => ({
+      i: ['١', '٢'][i], avatar: 'display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;font-family:Cairo,sans-serif;font-weight:900;color:#0A0F24;background:' + g
+    }));
+
+    return {
+      facts, learn, perks, rows, reviews,
+      buyLabel: bought ? '✓ أنت مشترك — ابدأ المشاهدة' : 'اشترك الآن بالرصيد',
+      lowShow: 'none', // يظهر لما رصيد الطالب أقل من السعر (من الـ API)
+      buy: () => this.setState({ bought: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

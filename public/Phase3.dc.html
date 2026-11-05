@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>المنافسة والإحصائيات والدفع</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&amp;family=Tajawal:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F24;font-family:'Tajawal',sans-serif;color:#F4F6FF}
+*{box-sizing:border-box}
+a{color:#A9B3D6;text-decoration:none}
+a:hover{color:#FFC93C}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(8deg)}}
+@keyframes shine{0%{transform:translateX(-140%) skewX(-20deg)}60%,100%{transform:translateX(260%) skewX(-20deg)}}
+.fl{animation:floaty 6s ease-in-out infinite}
+.shine{animation:shine 5s ease-in-out infinite}
+.btn3d{cursor:pointer;border:0;font-family:'Cairo',sans-serif;font-weight:900;transition:transform .15s ease,box-shadow .15s ease}
+.btn3d:hover{transform:translateY(-3px)}
+.btn3d:active{transform:translateY(5px)}
+.btn-main{background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 5px 0 #B37400,0 14px 24px rgba(255,176,32,.3)}
+.btn-main:active{box-shadow:0 1px 0 #B37400}
+.btn-ghost{background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset}
+.card{padding:24px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#121A3B);border:1px solid #2A356B;box-shadow:0 10px 0 -2px #070B1A,0 26px 40px rgba(0,0,0,.4)}
+.navlink{min-height:44px;display:flex;align-items:center;font-size:17px;font-weight:500}
+.field{width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid #2A356B;background:#0A0F24;color:#F4F6FF;font-family:'Tajawal',sans-serif;font-size:16px}
+:focus-visible{outline:3px solid #2DD4BF;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.fl,.shine{animation:none}}
+</style>
+</helmet>
+
+<div style="width:100%;max-width:1440px;margin:0 auto;background:#0A0F24;overflow:hidden;position:relative">
+<div aria-hidden="true" style="position:absolute;top:0;left:0;right:0;height:640px;background:radial-gradient(circle at 15% 10%,rgba(124,92,255,.3),transparent 55%),radial-gradient(circle at 90% 0%,rgba(45,212,191,.15),transparent 45%);pointer-events:none"></div>
+
+<header style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 32px;max-width:1280px;margin:0 auto">
+  <a href="Main.dc.html" style="display:flex;align-items:center;gap:12px;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px;color:#F4F6FF">
+    <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#7C5CFF,#2DD4BF);color:#0A0F24;font-size:26px;box-shadow:0 4px 0 #3B2A99">π</span>
+    [اسم المنصة]
+  </a>
+  <nav aria-label="أقسام المنصة" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 26px">
+    <a class="navlink" href="#compete">المنافسة والألقاب</a>
+    <a class="navlink" href="#stats">إحصائياتي</a>
+    <a class="navlink" href="#pay">الدفع</a>
+    <a class="navlink" href="#parents">تقرير ولي الأمر</a>
+    <a href="Student.dc.html" class="btn3d btn-ghost" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:14px;font-size:15px;color:#F4F6FF">لوحة الطالب</a>
+  </nav>
+</header>
+
+<!-- COMPETITION -->
+<section id="compete" style="position:relative;max-width:1280px;margin:0 auto;padding:40px 32px 24px">
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px">
+    <span style="color:#FFC93C;font-weight:700;font-size:16px">المنافسة والألقاب</span>
+    <h1 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(30px,5vw,52px);line-height:1.3;text-shadow:1px 1px 0 #3B2A99,2px 2px 0 #3B2A99,3px 3px 0 #2E2080,0 14px 24px rgba(0,0,0,.5)">اجمع النقاط واكسب لقبك</h1>
+    <p style="margin:0;color:#A9B3D6;font-size:17px">كل امتحان وواجب بيقرّبك من اللقب الجاي.</p>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:stretch">
+    <article class="card" style="flex:1 1 340px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px;background:linear-gradient(135deg,#6A4DF0,#2E2A9E)">
+      <div aria-hidden="true" class="shine" style="position:absolute;top:0;bottom:0;width:70px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent)"></div>
+      <span style="font-size:15px;color:#DDD8FF">لقبك الحالي</span>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span aria-hidden="true" class="fl" style="font-size:56px;line-height:1;color:#FFC93C;text-shadow:0 6px 0 rgba(20,10,80,.5)">♛</span>
+        <strong style="font-family:'Cairo',sans-serif;font-weight:900;font-size:34px">[اللقب]</strong>
+      </div>
+      <div role="progressbar" aria-label="التقدم للقب التالي" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72" style="height:12px;border-radius:999px;background:rgba(10,15,36,.5);overflow:hidden"><div style="height:100%;width:72%;border-radius:999px;background:linear-gradient(90deg,#FFC93C,#FFB020)"></div></div>
+      <span style="font-size:15px;color:#DDD8FF">[النقاط] نقطة — باقي [عدد] نقطة للقب [اللقب التالي]</span>
+      <span style="font-size:15px;color:#DDD8FF">ترتيبك: <strong style="color:#fff;font-family:'Cairo',sans-serif">#[الترتيب]</strong> بين [عدد] طالب</span>
+    </article>
+    <article class="card" style="flex:2 1 520px">
+      <h2 style="margin:0 0 18px;font-family:'Cairo',sans-serif;font-weight:900;font-size:26px">سلم الألقاب</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:14px">
+        <sc-for list="{{titles}}" as="t" hint-placeholder-count="4">
+          <div style="{{t.style}}">
+            <span aria-hidden="true" style="{{t.badge}}">{{t.sym}}</span>
+            <strong style="font-family:'Cairo',sans-serif;font-size:18px">{{t.name}}</strong>
+            <span style="font-size:14px;color:#A9B3D6">{{t.pts}} نقطة</span>
+            <span style="font-size:13px;font-weight:700;color:{{t.c}}">{{t.state}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </article>
+  </div>
+  <div style="margin-top:28px;display:flex;flex-direction:column;gap:12px;max-width:760px;margin-left:auto;margin-right:auto">
+    <sc-for list="{{board}}" as="r" hint-placeholder-count="4">
+      <div style="{{r.row}}">
+        <span style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:#0A0F24;font-family:'Cairo',sans-serif;font-weight:900;font-size:18px;color:#FFC93C">{{r.rank}}</span>
+        <span aria-hidden="true" style="display:flex;align-items:flex-end;justify-content:center;overflow:hidden;width:44px;height:44px;border-radius:50%;background:#2A356B"><svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="38" r="19" fill="#3A4690"></circle><path d="M12 100c0-26 17-42 38-42s38 16 38 42z" fill="#3A4690"></path></svg></span>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column"><strong style="font-size:17px">{{r.name}}</strong><span style="font-size:14px;color:#A9B3D6">[اللقب]</span></span>
+        <span style="font-size:15px;color:#A9B3D6">[النقاط] نقطة</span>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats" style="position:relative;max-width:1280px;margin:0 auto;padding:56px 32px 24px">
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px">
+    <span style="color:#2DD4BF;font-weight:700;font-size:16px">الإحصائيات</span>
+    <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,44px)">مستواك في أرقام</h2>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:22px;margin-bottom:28px">
+    <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+      <div class="card" style="flex:1 1 220px;display:flex;flex-direction:column;gap:6px;padding:20px">
+        <span aria-hidden="true" style="{{k.icon}}">{{k.sym}}</span>
+        <span style="font-size:15px;color:#A9B3D6">{{k.label}}</span>
+        <strong style="font-family:'Cairo',sans-serif;font-weight:900;font-size:34px;color:#FFC93C">[رقم] <span style="font-size:16px;color:#A9B3D6">{{k.unit}}</span></strong>
+      </div>
+    </sc-for>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:20px"><h3 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px">درجاتك آخر ٧ أيام</h3><span style="font-size:15px;color:#A9B3D6">من ١٠٠</span></div>
+    <div role="img" aria-label="رسم بياني بدرجات الأسبوع" style="display:flex;align-items:flex-end;gap:clamp(8px,2vw,22px);height:220px;padding-bottom:4px;border-bottom:1px solid #2A356B">
+      <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px">
+          <span style="font-size:13px;color:#A9B3D6">{{d.v}}</span>
+          <div style="{{d.bar}}"></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:clamp(8px,2vw,22px);margin-top:8px">
+      <sc-for list="{{week}}" as="d" hint-placeholder-count="7"><span style="flex:1;text-align:center;font-size:14px;color:#A9B3D6">{{d.day}}</span></sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENT -->
+<section id="pay" style="position:relative;max-width:1280px;margin:0 auto;padding:56px 32px 24px">
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px">
+    <span style="color:#FF6B9A;font-weight:700;font-size:16px">الدفع الأونلاين</span>
+    <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,44px)">اشحن رصيدك أو اشترك في كورس</h2>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:stretch">
+    <article class="card" style="flex:2 1 520px;display:flex;flex-direction:column;gap:18px">
+      <h3 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px">اختار طريقة الدفع</h3>
+      <div role="radiogroup" aria-label="طريقة الدفع" style="display:flex;flex-wrap:wrap;gap:14px">
+        <sc-for list="{{methods}}" as="m" hint-placeholder-count="4">
+          <button type="button" role="radio" aria-checked="{{m.selected}}" onClick="{{m.pick}}" class="btn3d" style="{{m.style}}">
+            <span aria-hidden="true" style="font-size:28px">{{m.sym}}</span>{{m.label}}
+          </button>
+        </sc-for>
+      </div>
+      <label for="amount" style="font-size:15px;color:#A9B3D6">المبلغ (ج.م)</label>
+      <input id="amount" class="field" type="text" inputmode="numeric" dir="ltr" placeholder="200" style="text-align:center;font-size:20px">
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <sc-for list="{{amounts}}" as="a" hint-placeholder-count="4"><button type="button" class="btn3d btn-ghost" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">{{a}} ج.م</button></sc-for>
+      </div>
+    </article>
+    <article class="card" style="flex:1 1 320px;display:flex;flex-direction:column;gap:14px;justify-content:space-between">
+      <h3 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px">ملخص الطلب</h3>
+      <div style="display:flex;justify-content:space-between;color:#A9B3D6;font-size:16px"><span>شحن رصيد</span><span>[المبلغ] ج.م</span></div>
+      <div style="display:flex;justify-content:space-between;color:#A9B3D6;font-size:16px"><span>رسوم الخدمة</span><span>[الرسوم] ج.م</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px dashed #2A356B"><strong style="font-size:18px">الإجمالي</strong><strong style="font-family:'Cairo',sans-serif;font-weight:900;font-size:28px;color:#FFC93C">[الإجمالي] ج.م</strong></div>
+      <button type="button" class="btn3d btn-main" style="min-height:54px;border-radius:16px;font-size:18px">ادفع الآن</button>
+      <span style="font-size:14px;color:#A9B3D6;text-align:center">دفع آمن ومشفّر — بيانات بطاقتك مش بتتخزن عندنا.</span>
+    </article>
+  </div>
+</section>
+
+<!-- PARENT REPORT -->
+<section id="parents" style="position:relative;max-width:1280px;margin:0 auto;padding:56px 32px 96px">
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px">
+    <span style="color:#7C5CFF;font-weight:700;font-size:16px">تقارير أولياء الأمور</span>
+    <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,44px)">التقرير الأسبوعي</h2>
+  </div>
+  <article class="card" style="display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:4px"><strong style="font-family:'Cairo',sans-serif;font-size:24px">[اسم الطالب]</strong><span style="color:#A9B3D6;font-size:15px">[المرحلة الدراسية] — الأسبوع من [تاريخ] إلى [تاريخ]</span></div>
+      <span style="display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.45);color:#5EEAD4;font-weight:700;font-size:16px">التقييم العام: [ممتاز]</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px">
+      <sc-for list="{{marks}}" as="m" hint-placeholder-count="4">
+        <div style="flex:1 1 220px;padding:16px;border-radius:18px;background:#0F1634;border:1px solid #232D5E;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between"><strong>{{m.label}}</strong><span style="color:#FFC93C;font-weight:700">{{m.v}}٪</span></div>
+          <div role="progressbar" aria-label="{{m.label}}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{m.v}}" style="height:10px;border-radius:999px;background:#1B2552;overflow:hidden"><div style="{{m.bar}}"></div></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="padding:16px 18px;border-radius:18px;background:rgba(255,201,60,.08);border:1px solid rgba(255,201,60,.35)">
+      <strong style="color:#FFD76A">ملاحظة المستر</strong>
+      <p style="margin:6px 0 0;color:#D5DBF2;font-size:16px;line-height:1.8">[ملاحظة المدرس عن مستوى الطالب والتوصيات]</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:14px">
+      <button type="button" class="btn3d btn-main" style="min-height:48px;padding:0 24px;border-radius:14px;font-size:16px">إرسال لولي الأمر</button>
+      <button type="button" class="btn3d btn-ghost" style="min-height:48px;padding:0 24px;border-radius:14px;font-size:16px">تحميل PDF</button>
+    </div>
+  </article>
+</section>
+
+<footer style="position:relative;padding:28px 32px;border-top:1px solid #1C2552;text-align:center;color:#A9B3D6;font-size:15px">جميع الحقوق محفوظة — [اسم المنصة]</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const sel = s.method || 'vf';
+    const grad = (a, b) => 'linear-gradient(135deg,' + a + ',' + b + ')';
+
+    const tdef = [
+      { name: 'مبتدئ', sym: '✦', pts: '٠', a: '#8E99BA', b: '#5B6688', st: 'تم' },
+      { name: 'متميز', sym: '★', pts: '٥٠٠', a: '#2DD4BF', b: '#3B82F6', st: 'تم' },
+      { name: 'بطل', sym: '♛', pts: '١٥٠٠', a: '#FFC93C', b: '#FF7A45', st: 'لقبك الحالي' },
+      { name: 'أسطورة', sym: '♚', pts: '٣٠٠٠', a: '#FF6B9A', b: '#7C5CFF', st: 'مقفول' }
+    ];
+    const titles = tdef.map((t) => {
+      const locked = t.st === 'مقفول';
+      const cur = t.st === 'لقبك الحالي';
+      return {
+        ...t,
+        c: cur ? '#FFC93C' : locked ? '#8E99BA' : '#2DD4BF',
+        state: t.st,
+        style: 'flex:1 1 130px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:18px 10px;border-radius:18px;background:#0F1634;border:1px solid ' + (cur ? '#FFC93C' : '#232D5E') + ';opacity:' + (locked ? .6 : 1),
+        badge: 'display:flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;font-size:30px;color:#fff;background:' + grad(t.a, t.b) + ';box-shadow:0 6px 0 rgba(0,0,0,.4);text-shadow:0 3px 0 rgba(10,15,36,.35)'
+      };
+    });
+
+    const board = ['٤', '٥', '٦', '٧'].map((r, i) => ({
+      rank: r,
+      name: i === 2 ? '[اسم الطالب] (أنت)' : '[اسم الطالب]',
+      row: 'display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;background:linear-gradient(170deg,#1B2552,#121A3B);box-shadow:0 6px 0 -1px #070B1A;border:1px solid ' + (i === 2 ? '#FFC93C' : '#2A356B')
+    }));
+
+    const kpis = [
+      { sym: '▶', label: 'ساعات المشاهدة', unit: 'ساعة', a: '#7C5CFF', b: '#2DD4BF' },
+      { sym: '✓', label: 'الواجبات المكتملة', unit: 'واجب', a: '#2DD4BF', b: '#3B82F6' },
+      { sym: '∑', label: 'متوسط الامتحانات', unit: '٪', a: '#FFC93C', b: '#FF7A45' },
+      { sym: '♨', label: 'أيام متتالية', unit: 'يوم', a: '#FF6B9A', b: '#FFC93C' }
+    ].map((k) => ({ ...k, icon: 'display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:14px;font-size:24px;color:#fff;background:' + grad(k.a, k.b) + ';box-shadow:0 4px 0 rgba(0,0,0,.35)' }));
+
+    const vals = [70, 85, 60, 92, 78, 88, 95];
+    const days = ['سبت', 'أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة'];
+    const week = vals.map((v, i) => ({
+      v: v, day: days[i],
+      bar: 'width:100%;max-width:56px;height:' + Math.round(v * 1.6) + 'px;border-radius:12px 12px 0 0;background:linear-gradient(180deg,#FFE08A,#FFB020);box-shadow:0 4px 0 rgba(255,255,255,.3) inset'
+    }));
+
+    const mdef = [
+      { key: 'vf', label: 'فودافون كاش', sym: '☎' },
+      { key: 'card', label: 'بطاقة بنكية', sym: '▭' },
+      { key: 'fawry', label: 'فوري', sym: '⌂' },
+      { key: 'wallet', label: 'محفظة المنصة', sym: '◈' }
+    ];
+    const methods = mdef.map((m) => {
+      const on = sel === m.key;
+      return {
+        ...m, selected: on,
+        style: 'flex:1 1 150px;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:16px;font-size:16px;' + (on ? 'background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 5px 0 #B37400' : 'background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset'),
+        pick: () => this.setState({ method: m.key })
+      };
+    });
+
+    const mk = [
+      { label: 'الامتحانات', v: 88, a: '#FFC93C', b: '#FFB020' },
+      { label: 'الواجبات', v: 95, a: '#2DD4BF', b: '#3B82F6' },
+      { label: 'الحضور', v: 80, a: '#7C5CFF', b: '#2DD4BF' },
+      { label: 'نسبة إكمال المحاضرات', v: 65, a: '#FF6B9A', b: '#FFC93C' }
+    ].map((m) => ({ ...m, bar: 'height:100%;width:' + m.v + '%;border-radius:999px;background:linear-gradient(90deg,' + m.a + ',' + m.b + ')' }));
+
+    return { titles, board, kpis, week, methods, amounts: ['٥٠', '١٠٠', '٢٠٠', '٥٠٠'], marks: mk };
+  }
+}
+</script>
+</body>
+</html>

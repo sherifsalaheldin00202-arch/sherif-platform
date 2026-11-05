@@ -1,0 +1,13 @@
+{
+  "name": "platform-supabase",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env server.js",
+    "test": "node --test",
+    "create-user": "node --env-file-if-exists=.env create-user.js"
+  },
+  "dependencies": { "pg": "8.13.1" },
+  "devDependencies": { "@electric-sql/pglite": "0.2.17" }
+}
