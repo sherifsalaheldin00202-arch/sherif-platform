@@ -43,6 +43,9 @@ CREATE TABLE IF NOT EXISTS codes(
   used_by INTEGER REFERENCES users(id),
   used_at TIMESTAMPTZ);
 
+-- وقت إنشاء الكود (لعرض الأحدث أول). آمن تشغّل الملف تاني
+ALTER TABLE codes ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT now();
+
 CREATE TABLE IF NOT EXISTS wallet_tx(
   id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id),
@@ -61,6 +64,17 @@ CREATE TABLE IF NOT EXISTS charge_requests(
   reviewed_by INTEGER REFERENCES users(id),
   reviewed_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+-- محاضرات الكورس (فيديو يوتيوب غير مدرج: بنخزّن الـ id بس)
+CREATE TABLE IF NOT EXISTS lessons(
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  video_id TEXT NOT NULL,
+  position INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE INDEX IF NOT EXISTS idx_lessons_course ON lessons(course_id);
+ALTER TABLE lessons ENABLE ROW LEVEL SECURITY;
 
 -- حدّ المحاولات (بدل الذاكرة، لأن Vercel بتشغّل أكتر من نسخة)
 CREATE TABLE IF NOT EXISTS rate_limits(

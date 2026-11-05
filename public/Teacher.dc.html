@@ -6,6 +6,7 @@
 <script src="./vendor/react.js"></script>
 <script src="./vendor/react-dom.js"></script>
 <script src="./support.js"></script>
+<script src="./api.js"></script>
 </head>
 <body>
 <x-dc>
@@ -47,7 +48,7 @@ a:hover{color:#FFC93C}
     <a class="navlink" href="#students">الطلاب</a>
     <a class="navlink" href="#charges">طلبات الشحن</a>
     <a class="navlink" href="#codes">الأكواد</a>
-    <a href="Main.dc.html" class="btn3d btn-ghost" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:14px;font-size:15px;color:#F4F6FF">تسجيل الخروج</a>
+    <a href="Main.dc.html" onClick="{{logout}}" class="btn3d btn-ghost" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:14px;font-size:15px;color:#F4F6FF">تسجيل الخروج</a>
   </nav>
 </header>
 
@@ -56,10 +57,11 @@ a:hover{color:#FFC93C}
   <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
     <div style="display:flex;flex-direction:column;gap:8px">
       <span style="color:#2DD4BF;font-weight:700;font-size:16px">لوحة المستر</span>
-      <h1 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(30px,5vw,52px);line-height:1.3;text-shadow:1px 1px 0 #3B2A99,2px 2px 0 #3B2A99,3px 3px 0 #2E2080,0 14px 24px rgba(0,0,0,.5)">أهلاً مستر [الاسم]</h1>
+      <h1 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:clamp(30px,5vw,52px);line-height:1.3;text-shadow:1px 1px 0 #3B2A99,2px 2px 0 #3B2A99,3px 3px 0 #2E2080,0 14px 24px rgba(0,0,0,.5)">أهلاً مستر {{name}}</h1>
     </div>
-    <button type="button" class="btn3d btn-main" style="min-height:54px;padding:0 28px;border-radius:16px;font-size:18px">+ رفع محاضرة جديدة</button>
+    <button type="button" onClick="{{openLessons}}" class="btn3d btn-main" style="min-height:54px;padding:0 28px;border-radius:16px;font-size:18px">+ رفع محاضرة جديدة</button>
   </div>
+  <sc-if value="{{hasNote}}" hint-placeholder-val="{{ false }}"><div role="status" style="{{noteStyle}}">{{noteText}}</div></sc-if>
   <div style="display:flex;flex-wrap:wrap;gap:22px">
     <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
       <div class="card" style="flex:1 1 220px;display:flex;flex-direction:column;gap:6px;padding:20px">
@@ -72,7 +74,7 @@ a:hover{color:#FFC93C}
   <div class="card">
     <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:18px"><h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px">الإيرادات آخر ٦ شهور</h2><span style="font-size:15px;color:#A9B3D6">ج.م</span></div>
     <div role="img" aria-label="رسم بياني للإيرادات الشهرية" style="display:flex;align-items:flex-end;gap:clamp(8px,2vw,22px);height:200px;border-bottom:1px solid #2A356B">
-      <sc-for list="{{rev}}" as="r" hint-placeholder-count="6"><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px"><span style="font-size:13px;color:#A9B3D6">[قيمة]</span><div style="{{r.bar}}"></div></div></sc-for>
+      <sc-for list="{{rev}}" as="r" hint-placeholder-count="6"><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px"><span style="font-size:13px;color:#A9B3D6">{{r.val}}</span><div style="{{r.bar}}"></div></div></sc-for>
     </div>
     <div style="display:flex;gap:clamp(8px,2vw,22px);margin-top:8px"><sc-for list="{{rev}}" as="r" hint-placeholder-count="6"><span style="flex:1;text-align:center;font-size:14px;color:#A9B3D6">{{r.m}}</span></sc-for></div>
   </div>
@@ -86,18 +88,29 @@ a:hover{color:#FFC93C}
       <article class="card" style="flex:1 1 300px;display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:center;gap:14px">
           <span aria-hidden="true" style="{{c.cover}}">{{c.sym}}</span>
-          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><strong style="font-family:'Cairo',sans-serif;font-size:19px;line-height:1.5">{{c.title}}</strong><span style="font-size:14px;color:#A9B3D6">{{c.grade}} • [عدد] طالب • [عدد] درس</span></div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><strong style="font-family:'Cairo',sans-serif;font-size:19px;line-height:1.5">{{c.title}}</strong><span style="font-size:14px;color:#A9B3D6">{{c.grade}} • {{c.students}} طالب • {{c.lessons}} درس</span></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <span style="{{c.badge}}">{{c.status}}</span>
-          <div style="display:flex;gap:8px">
-            <button type="button" class="btn3d btn-ghost" style="min-height:44px;padding:0 16px;border-radius:12px;font-size:15px">تعديل</button>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <button type="button" onClick="{{c.edit}}" class="btn3d btn-ghost" style="min-height:44px;padding:0 16px;border-radius:12px;font-size:15px">تعديل</button>
+            <button type="button" onClick="{{c.del}}" class="btn3d btn-ghost" style="min-height:44px;padding:0 16px;border-radius:12px;font-size:15px;color:#FFB3CC">حذف</button>
             <button type="button" onClick="{{c.toggle}}" class="btn3d btn-main" style="min-height:44px;padding:0 16px;border-radius:12px;font-size:15px">{{c.cta}}</button>
           </div>
         </div>
       </article>
     </sc-for>
   </div>
+  <sc-if value="{{noCourses}}" hint-placeholder-val="{{ false }}"><p style="margin:0 0 24px;padding:18px;border-radius:18px;background:#0F1634;border:1px dashed #2A356B;color:#A9B3D6;font-size:16px;line-height:1.8">لسه ماعملتش أي كورس. أنشئ كورسك الأول من النموذج اللي تحت.</p></sc-if>
+  <article id="newcourse" class="card" style="margin-top:24px;display:flex;flex-direction:column;gap:14px">
+    <h3 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:22px">كورس جديد</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:2 1 260px"><label for="nc-title" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">اسم الكورس</label><input id="nc-title" class="field" type="text" autocomplete="off" maxlength="100"></div>
+      <div style="flex:1 1 180px"><label for="nc-grade" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">المرحلة</label><select id="nc-grade" class="field"><option value="1">الصف الأول الثانوي</option><option value="2">الصف الثاني الثانوي</option><option value="3" selected>الصف الثالث الثانوي</option></select></div>
+      <div style="flex:1 1 140px"><label for="nc-price" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">السعر (جنيه)</label><input id="nc-price" class="field" type="text" inputmode="numeric" dir="ltr" style="text-align:right"></div>
+    </div>
+    <button type="button" onClick="{{createCourse}}" class="btn3d btn-main" style="min-height:50px;border-radius:14px;font-size:17px">إنشاء الكورس</button>
+  </article>
 </section>
 
 <!-- STUDENTS -->
@@ -110,11 +123,12 @@ a:hover{color:#FFC93C}
     <sc-for list="{{students}}" as="s" hint-placeholder-count="4">
       <div class="row">
         <span aria-hidden="true" style="display:flex;align-items:flex-end;justify-content:center;overflow:hidden;width:46px;height:46px;border-radius:50%;background:#2A356B"><svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="38" r="19" fill="#3A4690"></circle><path d="M12 100c0-26 17-42 38-42s38 16 38 42z" fill="#3A4690"></path></svg></span>
-        <div style="flex:1 1 160px;min-width:0;display:flex;flex-direction:column"><strong style="font-size:17px">{{s.name}}</strong><span style="font-size:14px;color:#A9B3D6">{{s.grade}} • آخر دخول [تاريخ]</span></div>
+        <div style="flex:1 1 160px;min-width:0;display:flex;flex-direction:column"><strong style="font-size:17px">{{s.name}}</strong><span style="font-size:14px;color:#A9B3D6">{{s.grade}} • انضم {{s.joined}}</span></div>
         <div style="flex:1 1 180px;display:flex;align-items:center;gap:10px"><div role="progressbar" aria-label="تقدم الطالب" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{s.pct}}" style="flex:1;height:10px;border-radius:999px;background:#1B2552;overflow:hidden"><div style="{{s.bar}}"></div></div><span style="font-size:14px;color:#A9B3D6;min-width:38px">{{s.pct}}٪</span></div>
-        <button type="button" class="btn3d btn-ghost" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">عرض التقرير</button>
+        <button type="button" onClick="{{s.report}}" class="btn3d btn-ghost" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">عرض التقرير</button>
       </div>
     </sc-for>
+    <sc-if value="{{noStudents}}" hint-placeholder-val="{{ false }}"><span style="font-size:15px;color:#A9B3D6">مفيش طلاب مشتركين في كورساتك لسه.</span></sc-if>
   </div>
 </section>
 
@@ -125,7 +139,7 @@ a:hover{color:#FFC93C}
     <sc-for list="{{charges}}" as="q" hint-placeholder-count="3">
       <div class="row">
         <span aria-hidden="true" style="flex:none;display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;font-size:22px;color:#fff;background:linear-gradient(135deg,#7C5CFF,#2DD4BF);box-shadow:0 4px 0 rgba(0,0,0,.35)">◈</span>
-        <div style="flex:1 1 180px;min-width:0;display:flex;flex-direction:column"><strong style="font-size:17px">[اسم الطالب] — {{q.amount}} ج.م</strong><span style="font-size:14px;color:#A9B3D6">{{q.method}} • [رقم العملية]</span></div>
+        <div style="flex:1 1 180px;min-width:0;display:flex;flex-direction:column"><strong style="font-size:17px">{{q.name}} — {{q.amount}} ج.م</strong><span style="font-size:14px;color:#A9B3D6">{{q.method}} • {{q.reference}} • {{q.phone}}</span></div>
         <span style="{{q.badge}}">{{q.label}}</span>
         <div style="display:{{q.btns}};gap:8px">
           <button type="button" onClick="{{q.ok}}" class="btn3d btn-main" style="min-height:44px;padding:0 18px;border-radius:12px;font-size:15px">قبول</button>
@@ -133,6 +147,7 @@ a:hover{color:#FFC93C}
         </div>
       </div>
     </sc-for>
+    <sc-if value="{{noCharges}}" hint-placeholder-val="{{ false }}"><span style="font-size:15px;color:#A9B3D6">مفيش طلبات شحن معلّقة دلوقتي.</span></sc-if>
   </div>
 </section>
 
@@ -142,9 +157,9 @@ a:hover{color:#FFC93C}
   <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch">
     <article class="card" style="flex:1 1 320px;display:flex;flex-direction:column;gap:14px">
       <label for="cc" style="font-size:15px;color:#A9B3D6">الكورس</label>
-      <select id="cc" class="field"><option>[اسم الكورس]</option></select>
+      <select id="cc" class="field"><sc-for list="{{courseOpts}}" as="o" hint-placeholder-count="1"><option value="{{o.id}}">{{o.title}}</option></sc-for></select>
       <label for="cn" style="font-size:15px;color:#A9B3D6">عدد الأكواد</label>
-      <input id="cn" class="field" type="text" inputmode="numeric" dir="ltr" value="5" style="text-align:center">
+      <input id="cn" class="field" type="text" inputmode="numeric" dir="ltr" placeholder="٥" autocomplete="off" style="text-align:center">
       <button type="button" onClick="{{gen}}" class="btn3d btn-main" style="min-height:50px;border-radius:14px;font-size:17px">إنشاء الأكواد</button>
     </article>
     <article class="card" style="flex:2 1 420px;display:flex;flex-direction:column;gap:12px">
@@ -158,37 +173,173 @@ a:hover{color:#FFC93C}
 </section>
 
 <footer style="position:relative;padding:28px 32px;border-top:1px solid #1C2552;text-align:center;color:#A9B3D6;font-size:15px">جميع الحقوق محفوظة — [اسم المنصة]</footer>
+
+<!-- MODALS -->
+<sc-if value="{{isEdit}}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{closeModal}}" style="position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,8,20,.78)">
+    <div role="dialog" aria-modal="true" aria-label="تعديل الكورس" onClick="{{stop}}" style="width:100%;max-width:520px;max-height:92vh;overflow-y:auto;padding:28px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#101733);border:1px solid #2A356B;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(124,92,255,.3)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+        <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:26px;color:#F4F6FF">تعديل الكورس</h2>
+        <button type="button" onClick="{{closeModal}}" aria-label="إغلاق" class="btn3d" style="width:44px;height:44px;border-radius:12px;background:#0A0F24;color:#F4F6FF;font-size:22px;box-shadow:0 0 0 1px #2A356B inset">×</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><label for="m-title" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">اسم الكورس</label><input id="m-title" class="field" type="text" autocomplete="off" maxlength="100"></div>
+        <div><label for="m-grade" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">المرحلة</label><select id="m-grade" class="field"><option value="1">الصف الأول الثانوي</option><option value="2">الصف الثاني الثانوي</option><option value="3">الصف الثالث الثانوي</option></select></div>
+        <div><label for="m-price" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">السعر (جنيه)</label><input id="m-price" class="field" type="text" inputmode="numeric" dir="ltr" style="text-align:right" autocomplete="off"></div>
+        <sc-if value="{{hasMerr}}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding:10px 14px;border-radius:12px;background:#2A1530;border:1px solid #FF6B9A;color:#FFB3CC;font-size:15px;line-height:1.6">{{merr}}</div></sc-if>
+        <button type="button" onClick="{{saveEdit}}" class="btn3d btn-main" style="min-height:50px;border-radius:14px;font-size:17px">حفظ التعديلات</button>
+        <button type="button" onClick="{{askDelete}}" class="btn3d btn-ghost" style="min-height:50px;border-radius:14px;font-size:17px">حذف الكورس</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{isDel}}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{closeModal}}" style="position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,8,20,.78)">
+    <div role="dialog" aria-modal="true" aria-label="حذف الكورس" onClick="{{stop}}" style="width:100%;max-width:480px;max-height:92vh;overflow-y:auto;padding:28px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#101733);border:1px solid #2A356B;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(124,92,255,.3)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+        <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:26px;color:#F4F6FF">حذف الكورس</h2>
+        <button type="button" onClick="{{closeModal}}" aria-label="إغلاق" class="btn3d" style="width:44px;height:44px;border-radius:12px;background:#0A0F24;color:#F4F6FF;font-size:22px;box-shadow:0 0 0 1px #2A356B inset">×</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <p style="margin:0;font-size:17px;line-height:1.9;color:#F4F6FF">هتحذف كورس "{{modalTitle}}" نهائيًا بكل محاضراته وأكواده غير المستخدمة. الكورس اللي عليه مشتركين مينفعش يتحذف (اخفيه بدل كده).</p>
+        <sc-if value="{{hasMerr}}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding:10px 14px;border-radius:12px;background:#2A1530;border:1px solid #FF6B9A;color:#FFB3CC;font-size:15px;line-height:1.6">{{merr}}</div></sc-if>
+        <button type="button" onClick="{{confirmDelete}}" class="btn3d btn-main" style="min-height:50px;border-radius:14px;font-size:17px">تأكيد الحذف</button>
+        <button type="button" onClick="{{closeModal}}" class="btn3d btn-ghost" style="min-height:50px;border-radius:14px;font-size:17px">إلغاء</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{isLessons}}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{closeModal}}" style="position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,8,20,.78)">
+    <div role="dialog" aria-modal="true" aria-label="رفع محاضرة جديدة" onClick="{{stop}}" style="width:100%;max-width:620px;max-height:92vh;overflow-y:auto;padding:28px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#101733);border:1px solid #2A356B;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(124,92,255,.3)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+        <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:26px;color:#F4F6FF">رفع محاضرة جديدة</h2>
+        <button type="button" onClick="{{closeModal}}" aria-label="إغلاق" class="btn3d" style="width:44px;height:44px;border-radius:12px;background:#0A0F24;color:#F4F6FF;font-size:22px;box-shadow:0 0 0 1px #2A356B inset">×</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><label for="l-course" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">الكورس</label><select id="l-course" class="field" value="{{lcourse}}" onChange="{{pickLCourse}}"><sc-for list="{{courseOpts}}" as="o" hint-placeholder-count="1"><option value="{{o.id}}">{{o.title}}</option></sc-for></select></div>
+        <div><label for="l-title" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">عنوان المحاضرة</label><input id="l-title" class="field" type="text" autocomplete="off" maxlength="100"></div>
+        <div><label for="l-url" style="display:block;margin-bottom:6px;font-size:15px;color:#A9B3D6">رابط الفيديو على يوتيوب (يفضّل غير مدرج)</label><input id="l-url" class="field" type="text" dir="ltr" autocomplete="off" placeholder="https://youtu.be/..." style="text-align:right"></div>
+        <sc-if value="{{hasMerr}}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding:10px 14px;border-radius:12px;background:#2A1530;border:1px solid #FF6B9A;color:#FFB3CC;font-size:15px;line-height:1.6">{{merr}}</div></sc-if>
+        <button type="button" onClick="{{addLesson}}" class="btn3d btn-main" style="min-height:50px;border-radius:14px;font-size:17px">إضافة المحاضرة</button>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+          <span style="font-size:15px;color:#A9B3D6">محاضرات الكورس</span>
+          <sc-for list="{{lessons}}" as="l" hint-placeholder-count="2">
+            <div class="row" style="justify-content:space-between"><div style="flex:1 1 160px;min-width:0;display:flex;flex-direction:column"><strong style="font-size:16px">{{l.title}}</strong><span dir="ltr" style="font-size:13px;color:#A9B3D6;text-align:right">{{l.vid}}</span></div><button type="button" onClick="{{l.remove}}" class="btn3d btn-ghost" style="min-height:40px;padding:0 14px;border-radius:12px;font-size:14px;color:#FFB3CC">حذف</button></div>
+          </sc-for>
+          <sc-if value="{{noLessons}}" hint-placeholder-val="{{ false }}"><span style="font-size:15px;color:#A9B3D6">مفيش محاضرات في الكورس ده لسه.</span></sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{isReport}}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{closeModal}}" style="position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,8,20,.78)">
+    <div role="dialog" aria-modal="true" aria-label="تقرير الطالب" onClick="{{stop}}" style="width:100%;max-width:560px;max-height:92vh;overflow-y:auto;padding:28px;border-radius:26px;background:linear-gradient(170deg,#1B2552,#101733);border:1px solid #2A356B;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(124,92,255,.3)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+        <h2 style="margin:0;font-family:'Cairo',sans-serif;font-weight:900;font-size:26px;color:#F4F6FF">تقرير الطالب</h2>
+        <button type="button" onClick="{{closeModal}}" aria-label="إغلاق" class="btn3d" style="width:44px;height:44px;border-radius:12px;background:#0A0F24;color:#F4F6FF;font-size:22px;box-shadow:0 0 0 1px #2A356B inset">×</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="padding:14px 16px;border-radius:16px;background:#0F1634;border:1px solid #232D5E;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:15px;color:#A9B3D6">الاسم</span><strong dir="auto" style="font-size:16px">{{r.name}}</strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:15px;color:#A9B3D6">المرحلة</span><strong dir="auto" style="font-size:16px">{{r.grade}}</strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:15px;color:#A9B3D6">موبايل الطالب</span><strong dir="auto" style="font-size:16px"><span dir="ltr">{{r.phone}}</span></strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:15px;color:#A9B3D6">موبايل ولي الأمر</span><strong dir="auto" style="font-size:16px"><span dir="ltr">{{r.parentPhone}}</span></strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:15px;color:#A9B3D6">المدرسة</span><strong dir="auto" style="font-size:16px">{{r.school}}</strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:15px;color:#A9B3D6">المحافظة</span><strong dir="auto" style="font-size:16px">{{r.governorate}}</strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:15px;color:#A9B3D6">تاريخ التسجيل</span><strong dir="auto" style="font-size:16px">{{r.joined}}</strong></div>
+        </div>
+        <span style="font-size:15px;color:#A9B3D6">كورسات الطالب عندك</span>
+        <sc-for list="{{r.courses}}" as="c" hint-placeholder-count="2">
+          <div class="row" style="justify-content:space-between"><strong style="font-size:16px">{{c.title}}</strong><span style="font-size:14px;color:#2DD4BF;font-weight:700">{{c.how}}</span></div>
+        </sc-for>
+        <span style="font-size:14px;color:#A9B3D6;line-height:1.7">نسبة التقدم هتظهر لما نربط مشغّل المحاضرات.</span>
+      </div>
+    </div>
+  </div>
+</sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3300}}'>
+const goTo = (u) => { if (window.parent !== window) window.parent.postMessage({ dcnav: u }, '*'); else location.href = u; };
 class Component extends DCLogic {
+  componentDidMount() { this.load(); }
+  async load() {
+    try {
+      const me = await window.api('/me');
+      if (me.role !== 'teacher') { goTo({ student: 'Student.dc.html', supervisor: 'Supervisor.dc.html' }[me.role] || 'Main.dc.html'); return; }
+      const [c, st, k, ch, cd] = await Promise.all([
+        window.api('/teacher/courses'), window.api('/teacher/students'), window.api('/teacher/stats'),
+        window.api('/teacher/charge-requests'), window.api('/teacher/codes')
+      ]);
+      this.setState({ me, tcourses: c.courses, tstudents: st.students, stats: k, charges: ch.requests, codes: cd.codes, loaded: true });
+    } catch (x) {
+      if (x.status === 401) goTo('Main.dc.html');
+      else this.setState({ note: { kind: 'err', text: 'تعذّر تحميل البيانات، جرّب تحدّث الصفحة' } });
+    }
+  }
   renderVals() {
     const s = this.state || {};
     const grad = (a, b) => 'linear-gradient(135deg,' + a + ',' + b + ')';
     const pill = (c) => 'display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:700;color:' + c + ';background:' + c + '1F;border:1px solid ' + c + '66';
+    const fmt = (c) => (c / 100).toLocaleString('ar-EG');
+    const num = (n) => Number(n || 0).toLocaleString('ar-EG');
+    const me = s.me || {};
+    const st = s.stats || {};
+    const GN = { '1': 'الصف الأول الثانوي', '2': 'الصف الثاني الثانوي', '3': 'الصف الثالث الثانوي' };
+    const looks = [
+      { sym: '∑', a: '#7C5CFF', b: '#2DD4BF' }, { sym: '∫', a: '#FF6B9A', b: '#FFC93C' }, { sym: '∠', a: '#2DD4BF', b: '#3B82F6' },
+      { sym: 'π', a: '#FFC93C', b: '#FF7A45' }, { sym: '√', a: '#7C5CFF', b: '#FF6B9A' }, { sym: '%', a: '#2DD4BF', b: '#7C5CFF' }
+    ];
+    const val = (id) => (document.getElementById(id) || {}).value || '';
+    const setv = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+    // أرقام عربية (١٠) أو إنجليزي (10) الاتنين مقبولين
+    const digits = (v) => String(v).replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+    const toNum = (v) => { const t = digits(v).trim(); return t === '' ? NaN : Number(t); };
+    const modal = s.modal || null;
+    const mact = async (job) => {
+      if (this._busy) return;
+      this._busy = true;
+      try { this.setState({ merr: '' }); await job(); }
+      catch (x) { this.setState({ merr: x.status ? x.message : 'تعذّر الاتصال بالسيرفر، جرّب تاني' }); }
+      this._busy = false;
+    };
+    const loadLessons = async (cid) => { this.setState({ lessons: (await window.api('/teacher/courses/' + cid + '/lessons')).lessons }); };
+    const clear = (id) => { const el = document.getElementById(id); if (el) el.value = ''; };
+    const act = async (job) => {
+      if (this._busy) return;
+      this._busy = true;
+      try { await job(); }
+      catch (x) { this.setState({ note: { kind: 'err', text: x.status ? x.message : 'تعذّر الاتصال بالسيرفر، جرّب تاني' } }); }
+      this._busy = false;
+    };
+    const bad = (m) => Object.assign(new Error(m), { status: 400 });
 
     const kpis = [
-      { sym: '☻', label: 'إجمالي الطلاب', val: '[٠٠٠]', unit: 'طالب', a: '#7C5CFF', b: '#2DD4BF' },
-      { sym: '$', label: 'إيرادات الشهر', val: '[٠٠٠]', unit: 'ج.م', a: '#FFC93C', b: '#FF7A45' },
-      { sym: '▶', label: 'الكورسات المنشورة', val: '[٠]', unit: 'كورس', a: '#2DD4BF', b: '#3B82F6' },
-      { sym: '◈', label: 'طلبات شحن معلّقة', val: '[٠]', unit: 'طلب', a: '#FF6B9A', b: '#FFC93C' }
+      { sym: '☻', label: 'إجمالي الطلاب', val: num(st.students), unit: 'طالب', a: '#7C5CFF', b: '#2DD4BF' },
+      { sym: '$', label: 'إيرادات الشهر', val: fmt(st.monthRevenue || 0), unit: 'ج.م', a: '#FFC93C', b: '#FF7A45' },
+      { sym: '▶', label: 'الكورسات المنشورة', val: num(st.published), unit: 'كورس', a: '#2DD4BF', b: '#3B82F6' },
+      { sym: '◈', label: 'طلبات شحن معلّقة', val: num(st.pending), unit: 'طلب', a: '#FF6B9A', b: '#FFC93C' }
     ].map((k) => ({ ...k, icon: 'display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:14px;font-size:24px;color:#fff;background:' + grad(k.a, k.b) + ';box-shadow:0 4px 0 rgba(0,0,0,.35)' }));
 
-    const rv = [55, 62, 48, 80, 74, 95];
-    const ms = ['١', '٢', '٣', '٤', '٥', '٦'];
-    const rev = rv.map((v, i) => ({ m: 'شهر ' + ms[i], bar: 'width:100%;max-width:60px;height:' + Math.round(v * 1.6) + 'px;border-radius:12px 12px 0 0;background:linear-gradient(180deg,#FFE08A,#FFB020);box-shadow:0 4px 0 rgba(255,255,255,.3) inset' }));
+    const rv = st.revenue || [];
+    const max = Math.max(1, ...rv.map((r) => r.total));
+    const rev = rv.map((r) => ({ m: 'شهر ' + num(r.month), val: fmt(r.total),
+      bar: 'width:100%;max-width:60px;height:' + (r.total > 0 ? Math.max(6, Math.round(r.total / max * 152)) : 3) + 'px;border-radius:12px 12px 0 0;background:linear-gradient(180deg,#FFE08A,#FFB020);box-shadow:0 4px 0 rgba(255,255,255,.3) inset' }));
 
-    const pub = s.pub || { 0: true, 1: true, 2: false };
-    const cdef = [
-      { title: 'الجبر والتحليل — الشرح الكامل', grade: 'الصف الثالث الثانوي', sym: '∑', a: '#7C5CFF', b: '#2DD4BF' },
-      { title: 'التفاضل والتكامل', grade: 'الصف الثالث الثانوي', sym: '∫', a: '#FF6B9A', b: '#FFC93C' },
-      { title: 'الهندسة وحساب المثلثات', grade: 'الصف الثاني الثانوي', sym: '∠', a: '#2DD4BF', b: '#3B82F6' }
-    ];
-    const courses = cdef.map((c, i) => {
-      const on = !!pub[i];
-      return { ...c, status: on ? 'منشور' : 'مسودة', cta: on ? 'إخفاء' : 'نشر', badge: pill(on ? '#2DD4BF' : '#8E99BA'),
-        cover: 'flex:none;display:flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:16px;font-family:Cairo,sans-serif;font-weight:900;font-size:32px;color:#fff;background:' + grad(c.a, c.b) + ';box-shadow:0 5px 0 rgba(0,0,0,.35);text-shadow:0 3px 0 rgba(10,15,36,.35)',
-        toggle: () => this.setState({ pub: { ...pub, [i]: !on } }) };
+    const tcourses = s.tcourses || [];
+    const courses = tcourses.map((c) => {
+      const on = !!c.published, lk = looks[c.id % looks.length];
+      return { title: c.title, grade: GN[c.grade] || '', students: num(c.students), lessons: num(c.lessons), sym: lk.sym, status: on ? 'منشور' : 'مسودة', cta: on ? 'إخفاء' : 'نشر', badge: pill(on ? '#2DD4BF' : '#8E99BA'),
+        cover: 'flex:none;display:flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:16px;font-family:Cairo,sans-serif;font-weight:900;font-size:32px;color:#fff;background:' + grad(lk.a, lk.b) + ';box-shadow:0 5px 0 rgba(0,0,0,.35);text-shadow:0 3px 0 rgba(10,15,36,.35)',
+        edit: () => { this.setState({ modal: { kind: 'edit', course: c }, merr: '' }); setTimeout(() => { setv('m-title', c.title); setv('m-grade', String(c.grade)); setv('m-price', String(c.price / 100)); }, 30); },
+        del: () => this.setState({ modal: { kind: 'del', course: c }, merr: '' }),
+        toggle: () => act(async () => {
+          await window.api('/teacher/courses/' + c.id + '/publish', { published: !on });
+          await this.load();
+          this.setState({ note: { kind: 'ok', text: on ? 'اتخفى الكورس عن الطلاب.' : 'اتنشر الكورس وبقى ظاهر للطلاب.' } });
+        }) };
     });
 
     const gsel = s.grade || 'all';
@@ -197,27 +348,92 @@ class Component extends DCLogic {
       const on = gsel === g.k;
       return { label: g.l, on: on, pick: () => this.setState({ grade: g.k }), style: 'min-height:44px;padding:0 20px;border-radius:14px;font-size:16px;' + (on ? 'background:linear-gradient(180deg,#FFE08A,#FFB020);color:#1A1200;box-shadow:0 4px 0 #B37400' : 'background:#0A0F24;color:#F4F6FF;box-shadow:0 4px 0 #05081A,0 0 0 1px #2A356B inset') };
     });
-    const GN = { '1': 'الصف الأول الثانوي', '2': 'الصف الثاني الثانوي', '3': 'الصف الثالث الثانوي' };
-    const sdef = [{ g: '3', p: 72 }, { g: '3', p: 40 }, { g: '2', p: 88 }, { g: '1', p: 15 }, { g: '2', p: 60 }];
-    const students = sdef.filter((x) => gsel === 'all' || x.g === gsel).map((x) => ({ name: '[اسم الطالب]', grade: GN[x.g], pct: x.p, bar: 'height:100%;width:' + x.p + '%;border-radius:999px;background:linear-gradient(90deg,#FFC93C,#FFB020)' }));
+    const students = (s.tstudents || []).filter((x) => gsel === 'all' || String(x.grade) === gsel).map((x) => ({
+      name: x.name, grade: GN[x.grade] || '', joined: new Date(x.joined).toLocaleDateString('ar-EG'),
+      pct: 0, // التقدم هيتربط لما نربط المشغّل
+      report: () => act(async () => { this.setState({ modal: { kind: 'report', r: await window.api('/teacher/students/' + x.id) }, merr: '' }); }),
+      bar: 'height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#FFC93C,#FFB020)' }));
 
-    const cs = s.cs || {};
-    const chdef = [{ amount: '[٢٠٠]', method: 'فودافون كاش' }, { amount: '[٥٠٠]', method: 'إنستا باي' }, { amount: '[١٠٠]', method: 'فوري' }];
-    const charges = chdef.map((c, i) => {
-      const st = cs[i] || 'wait';
-      const col = st === 'ok' ? '#2DD4BF' : st === 'no' ? '#FF6B9A' : '#FFC93C';
-      return { ...c, label: st === 'ok' ? 'تم القبول' : st === 'no' ? 'مرفوض' : 'قيد المراجعة', badge: pill(col), btns: st === 'wait' ? 'flex' : 'none',
-        ok: () => this.setState({ cs: { ...cs, [i]: 'ok' } }), no: () => this.setState({ cs: { ...cs, [i]: 'no' } }) };
-    });
+    const mlabel = { vodafone_cash: 'فودافون كاش', instapay: 'إنستا باي' };
+    const charges = (s.charges || []).map((r) => ({
+      name: r.name, phone: r.phone, reference: r.reference || '', amount: fmt(r.amount), method: mlabel[r.method] || r.method,
+      label: 'قيد المراجعة', badge: pill('#FFC93C'), btns: 'flex',
+      ok: () => act(async () => { await window.api('/teacher/charge-requests/' + r.id + '/approve', {}); await this.load(); this.setState({ note: { kind: 'ok', text: 'تم قبول الطلب وإضافة الرصيد للطالب.' } }); }),
+      no: () => act(async () => { await window.api('/teacher/charge-requests/' + r.id + '/reject', {}); await this.load(); this.setState({ note: { kind: 'ok', text: 'تم رفض الطلب.' } }); })
+    }));
 
-    const codes = (s.codes || []).map((code) => ({ code }));
-    const gen = () => {
-      const ch = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      const mk = () => Array.from({ length: 15 }, () => ch[Math.floor(Math.random() * ch.length)]).join('');
-      this.setState({ codes: Array.from({ length: 5 }, mk) });
+    const codes = (s.codes || []).map((c) => ({ code: c.code }));
+    const note = s.note || null;
+    const noteStyle = 'padding:12px 18px;border-radius:14px;font-size:16px;line-height:1.7;' + (note && note.kind === 'ok'
+      ? 'background:#0F2A2A;border:1px solid #2DD4BF;color:#9DF0E3' : 'background:#2A1530;border:1px solid #FF6B9A;color:#FFB3CC');
+
+    const lessons = (s.lessons || []).map((l) => ({ title: l.title, vid: l.video_id,
+      remove: () => mact(async () => { await window.api('/teacher/lessons/' + l.id + '/delete', {}); await loadLessons(s.lcourse); await this.load(); }) }));
+    const GN2 = GN;
+    const rr = modal && modal.kind === 'report' ? modal.r : null;
+    const r = rr ? { name: rr.name, grade: GN2[rr.grade] || '—', phone: rr.phone, parentPhone: rr.parent_phone || '—', school: rr.school || '—', governorate: rr.governorate || '—',
+      joined: new Date(rr.created_at).toLocaleDateString('ar-EG'),
+      courses: (rr.courses || []).map((c) => ({ title: c.title, how: c.source === 'code' ? 'اشترك بكود' : 'اشترك بالرصيد' })) } : { courses: [] };
+
+    return {
+      kpis, rev, courses, gradeTabs, students, charges, codes,
+      r, lessons, noLessons: !!modal && modal.kind === 'lessons' && lessons.length === 0, lcourse: s.lcourse || '',
+      isEdit: !!modal && modal.kind === 'edit', isDel: !!modal && modal.kind === 'del', isLessons: !!modal && modal.kind === 'lessons', isReport: !!modal && modal.kind === 'report',
+      modalTitle: modal && modal.course ? modal.course.title : '', hasMerr: !!s.merr, merr: s.merr || '',
+      stop: (e) => e.stopPropagation(),
+      closeModal: () => this.setState({ modal: null, merr: '' }),
+      askDelete: () => this.setState({ modal: { kind: 'del', course: modal.course }, merr: '' }),
+      saveEdit: () => mact(async () => {
+        const title = val('m-title').trim(), price = toNum(val('m-price'));
+        if (title.length < 3) throw bad('اكتب اسم الكورس (٣ حروف على الأقل)');
+        if (!Number.isInteger(price) || price < 0 || price > 5000) throw bad('اكتب السعر بالجنيه (رقم صحيح من ٠ لـ ٥٠٠٠)');
+        await window.api('/teacher/courses/' + modal.course.id + '/update', { title, grade: Number(val('m-grade')), price });
+        await this.load();
+        this.setState({ modal: null, note: { kind: 'ok', text: 'اتحفظت تعديلات الكورس.' } });
+      }),
+      confirmDelete: () => mact(async () => {
+        await window.api('/teacher/courses/' + modal.course.id + '/delete', {});
+        await this.load();
+        this.setState({ modal: null, note: { kind: 'ok', text: 'اتحذف الكورس.' } });
+      }),
+      openLessons: () => {
+        if (!tcourses.length) { this.setState({ note: { kind: 'err', text: 'اعمل كورس الأول من "كورس جديد" وبعدين ارفع له محاضرات.' } }); const el = document.getElementById('newcourse'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+        const cid = tcourses[0].id;
+        act(async () => { await loadLessons(cid); this.setState({ modal: { kind: 'lessons' }, lcourse: cid, merr: '' }); });
+      },
+      pickLCourse: (e) => { const cid = Number(e.target.value); this.setState({ lcourse: cid, merr: '' }); mact(() => loadLessons(cid)); },
+      addLesson: () => mact(async () => {
+        const title = val('l-title').trim(), url = val('l-url').trim();
+        if (title.length < 2) throw bad('اكتب عنوان المحاضرة');
+        if (!url) throw bad('الصق رابط الفيديو من يوتيوب');
+        await window.api('/teacher/courses/' + s.lcourse + '/lessons', { title, url });
+        setv('l-title', ''); setv('l-url', '');
+        await loadLessons(s.lcourse); await this.load();
+      }),
+      name: me.name || '', courseOpts: tcourses.map((c) => ({ id: c.id, title: c.title })),
+      noCourses: !!s.loaded && courses.length === 0, noStudents: !!s.loaded && students.length === 0, noCharges: !!s.loaded && charges.length === 0,
+      noCodes: codes.length ? 'none' : 'block',
+      hasNote: !!note, noteStyle, noteText: note ? note.text : '',
+      logout: (e) => { e.preventDefault(); window.api('/auth/logout', {}).catch(() => {}).then(() => goTo('Main.dc.html')); },
+      toNew: () => { const el = document.getElementById('newcourse'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); const t = document.getElementById('nc-title'); if (t) t.focus({ preventScroll: true }); },
+      createCourse: () => act(async () => {
+        const title = val('nc-title').trim(), price = toNum(val('nc-price'));
+        if (title.length < 3) throw bad('اكتب اسم الكورس (٣ حروف على الأقل)');
+        if (!Number.isInteger(price) || price < 0 || price > 5000) throw bad('اكتب السعر بالجنيه (رقم صحيح من ٠ لـ ٥٠٠٠)');
+        await window.api('/teacher/courses', { title, grade: Number(val('nc-grade')), price });
+        clear('nc-title'); clear('nc-price');
+        await this.load();
+        this.setState({ note: { kind: 'ok', text: 'اتعمل الكورس كمسودة. اضغط "نشر" عشان يظهر للطلاب.' } });
+      }),
+      gen: () => act(async () => {
+        const courseId = Number(val('cc')), count = val('cn').trim() === '' ? 5 : toNum(val('cn'));
+        if (!courseId) throw bad('اعمل كورس الأول وبعدين اختاره');
+        if (!Number.isInteger(count) || count < 1 || count > 200) throw bad('عدد الأكواد لازم يكون من ١ لـ ٢٠٠');
+        await window.api('/teacher/codes', { courseId, count });
+        await this.load();
+        this.setState({ note: { kind: 'ok', text: 'اتعمل ' + num(count) + ' كود جديد.' } });
+      })
     };
-
-    return { kpis, rev, courses, gradeTabs, students, charges, codes, noCodes: codes.length ? 'none' : 'block', gen };
   }
 }
 </script>

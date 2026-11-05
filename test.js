@@ -108,3 +108,57 @@ test('رفض الطلبات بدون JSON (CSRF) ومسارات الملفات',
   assert.equal((await fetch(base + '/..%2f..%2fetc/passwd')).status, 403);
   assert.equal((await fetch(base + '/')).status, 200);
 });
+
+test('لوحة المستر: كورساتي، الأكواد، الطلاب، الإحصائيات', async () => {
+  const cs = (await call('/api/teacher/courses', { cookie: T })).j.courses;
+  assert.equal(cs.length, 3); assert.ok(cs.every((c) => c.published === true));
+  assert.deepEqual(cs.map((c) => c.students), [1, 1, 1]); // كورس ١ بالشراء، كورس ٢ بالكود، كورس ٣ بالشراء
+  assert.equal((await call('/api/teacher/courses', { cookie: S })).status, 403);
+  const codes = (await call('/api/teacher/codes', { cookie: T })).j.codes;
+  assert.equal(codes.length, 1); // اتنين اتعملوا، واحد اتفعّل
+  assert.equal(codes[0].code.length, 15);
+  assert.equal((await call('/api/teacher/codes', { cookie: S })).status, 403);
+  const st = (await call('/api/teacher/students', { cookie: T })).j.students;
+  assert.equal(st.length, 1); assert.equal(st[0].grade, 3);
+  const k = (await call('/api/teacher/stats', { cookie: T })).j;
+  assert.equal(k.students, 1); assert.equal(k.published, 3); assert.equal(k.pending, 0);
+  assert.equal(k.revenue.length, 6);
+  assert.equal(k.monthRevenue, 5000); // ٤٠ + ١٠ جنيه (كورس ١ وكورس ٣) = ٥٠ جنيه
+  assert.equal(k.revenue[5].total, 5000);
+});
+
+test('تعديل/حذف الكورس، المحاضرات، تقرير الطالب', async () => {
+  const c = (await call('/api/teacher/courses', { cookie: T, body: { title: 'كورس مؤقت', grade: 2, price: 10 } })).j.id;
+  assert.equal((await call(`/api/teacher/courses/${c}/update`, { cookie: T, body: { title: 'ab', grade: 2, price: 10 } })).status, 400);
+  assert.equal((await call(`/api/teacher/courses/${c}/update`, { cookie: T, body: { title: 'كورس معدّل', grade: 1, price: 25 } })).status, 200);
+  const row = (await call('/api/teacher/courses', { cookie: T })).j.courses.find((x) => x.id === c);
+  assert.equal(row.title, 'كورس معدّل'); assert.equal(row.grade, 1); assert.equal(row.price, 2500); assert.equal(row.lessons, 0);
+  // محاضرات
+  assert.equal((await call(`/api/teacher/courses/${c}/lessons`, { cookie: T, body: { title: 'درس ١', url: 'https://evil.com/x' } })).status, 400);
+  const l1 = (await call(`/api/teacher/courses/${c}/lessons`, { cookie: T, body: { title: 'درس ١', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' } })).j.id;
+  await call(`/api/teacher/courses/${c}/lessons`, { cookie: T, body: { title: 'درس ٢', url: 'https://youtu.be/dQw4w9WgXcR' } });
+  const ls = (await call(`/api/teacher/courses/${c}/lessons`, { cookie: T })).j.lessons;
+  assert.deepEqual(ls.map((x) => x.title), ['درس ١', 'درس ٢']); assert.equal(ls[0].video_id, 'dQw4w9WgXcQ');
+  assert.equal((await call(`/api/teacher/lessons/${l1}/delete`, { cookie: T, body: {} })).status, 200);
+  assert.equal((await call(`/api/teacher/lessons/${l1}/delete`, { cookie: T, body: {} })).status, 404);
+  // مستر تاني مايقدرش يلمس كورس غيره
+  await q("INSERT INTO users(name,phone,pass_hash,role) VALUES('مستر ٢','01088888888',$1,'teacher')", [hashPw('teacherpass2')]);
+  const T2 = (await call('/api/auth/login', { body: { phone: '01088888888', password: 'teacherpass2' } })).cookie;
+  assert.equal((await call(`/api/teacher/courses/${c}/delete`, { cookie: T2, body: {} })).status, 404);
+  assert.equal((await call(`/api/teacher/courses/${c}/lessons`, { cookie: T2 })).status, 404);
+  assert.equal((await call(`/api/teacher/courses/${c}/update`, { cookie: T2, body: { title: 'سرقة', grade: 1, price: 0 } })).status, 404);
+  assert.equal((await call(`/api/teacher/courses/${c}/update`, { cookie: S, body: { title: 'سرقة', grade: 1, price: 0 } })).status, 403);
+  // حذف: كورس عليه كود غير مستخدم يتحذف، وكورس عليه مشتركين لأ
+  await call('/api/teacher/codes', { cookie: T, body: { courseId: c, count: 2 } });
+  assert.equal((await call(`/api/teacher/courses/${c}/delete`, { cookie: T, body: {} })).status, 200);
+  assert.equal((await call('/api/teacher/courses', { cookie: T })).j.courses.some((x) => x.id === c), false);
+  const first = (await call('/api/teacher/courses', { cookie: T })).j.courses[0].id;
+  assert.equal((await call(`/api/teacher/courses/${first}/delete`, { cookie: T, body: {} })).status, 409);
+  // تقرير الطالب
+  const sid = (await call('/api/teacher/students', { cookie: T })).j.students[0].id;
+  const rep = (await call(`/api/teacher/students/${sid}`, { cookie: T })).j;
+  assert.equal(rep.name, 'طالب تجريبي'); assert.equal(rep.parent_phone, '01234567890'); assert.equal(rep.courses.length, 3);
+  assert.equal((await call(`/api/teacher/students/${sid}`, { cookie: T2 })).status, 404); // مش من طلاب المستر ده
+  assert.equal((await call('/api/teacher/students/999999', { cookie: T })).status, 404);
+  assert.equal((await call(`/api/teacher/students/${sid}`, { cookie: S })).status, 403);
+});

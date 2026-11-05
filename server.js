@@ -205,6 +205,98 @@ route('POST', '/api/teacher/codes', ['teacher'], async ({ u, body }) => {
   return { codes };
 });
 
+route('GET', '/api/teacher/courses', ['teacher'], async ({ u }) => ({
+  courses: (await q(`SELECT c.id,c.title,c.grade,c.price,c.published,
+    (SELECT COUNT(*)::int FROM enrollments e WHERE e.course_id=c.id) AS students,
+    (SELECT COUNT(*)::int FROM lessons l WHERE l.course_id=c.id) AS lessons
+    FROM courses c WHERE c.teacher_id=$1 ORDER BY c.id`, [u.id])).rows
+}));
+route('POST', '/api/teacher/courses/:id/update', ['teacher'], async ({ u, params, body }) => {
+  await own(u, params.id);
+  const title = String(body.title || '').trim();
+  if (title.length < 3 || title.length > 100) throw new HttpError(400, 'العنوان غير صالح');
+  await q('UPDATE courses SET title=$1,grade=$2,price=$3 WHERE id=$4', [title, int(body.grade, 1, 3), int(body.price, 0, 5000) * 100, params.id]);
+  return { ok: true };
+});
+// الحذف بس لو مفيش مشتركين (ما نضيّعش اشتراك طالب دفع). غير كده: إخفاء الكورس
+route('POST', '/api/teacher/courses/:id/delete', ['teacher'], async ({ u, params }) => {
+  await own(u, params.id);
+  return tx(async (t) => {
+    if ((await t.one('SELECT COUNT(*)::int AS n FROM enrollments WHERE course_id=$1', [params.id])).n > 0)
+      throw new HttpError(409, 'الكورس عليه مشتركين فمينفعش يتحذف. اخفيه بدل الحذف.');
+    await t.q('DELETE FROM codes WHERE course_id=$1', [params.id]);
+    await t.q('DELETE FROM courses WHERE id=$1', [params.id]);
+    return { ok: true };
+  });
+});
+const ytId = (raw) => {
+  const v = String(raw || '').trim();
+  if (/^[A-Za-z0-9_-]{11}$/.test(v)) return v;
+  try {
+    const x = new URL(v);
+    const h = x.hostname.replace(/^www\.|^m\./, '');
+    const c = h === 'youtu.be' ? x.pathname.slice(1).split('/')[0]
+      : h === 'youtube.com' ? (x.searchParams.get('v') || (x.pathname.match(/^\/(?:embed|live|shorts)\/([^/]+)/) || [])[1]) : '';
+    if (/^[A-Za-z0-9_-]{11}$/.test(c || '')) return c;
+  } catch {}
+  throw new HttpError(400, 'رابط يوتيوب غير صالح');
+};
+route('GET', '/api/teacher/courses/:id/lessons', ['teacher'], async ({ u, params }) => {
+  await own(u, params.id);
+  return { lessons: (await q('SELECT id,title,video_id,position FROM lessons WHERE course_id=$1 ORDER BY position,id', [params.id])).rows };
+});
+route('POST', '/api/teacher/courses/:id/lessons', ['teacher'], async ({ u, params, body }) => {
+  await own(u, params.id);
+  const title = String(body.title || '').trim();
+  if (title.length < 2 || title.length > 100) throw new HttpError(400, 'عنوان المحاضرة غير صالح');
+  const vid = ytId(body.url);
+  const r = await one('INSERT INTO lessons(course_id,title,video_id,position) VALUES($1,$2,$3,(SELECT COALESCE(MAX(position),0)+1 FROM lessons WHERE course_id=$1)) RETURNING id', [params.id, title, vid]);
+  return { id: r.id };
+});
+route('POST', '/api/teacher/lessons/:id/delete', ['teacher'], async ({ u, params }) => {
+  const r = await q('DELETE FROM lessons WHERE id=$1 AND course_id IN (SELECT id FROM courses WHERE teacher_id=$2)', [id(params.id), u.id]);
+  if (!r.count) throw new HttpError(404, 'المحاضرة غير موجودة');
+  return { ok: true };
+});
+route('GET', '/api/teacher/students/:id', ['teacher'], async ({ u, params }) => {
+  const sid = id(params.id);
+  const s = await one(`SELECT s.id,s.name,s.phone,s.parent_phone,s.school,s.governorate,s.grade,s.created_at FROM users s
+    WHERE s.id=$1 AND s.role='student' AND EXISTS(SELECT 1 FROM enrollments e JOIN courses c ON c.id=e.course_id WHERE e.user_id=s.id AND c.teacher_id=$2)`, [sid, u.id]);
+  if (!s) throw new HttpError(404, 'الطالب غير موجود');
+  s.courses = (await q(`SELECT c.id,c.title,e.source,e.created_at FROM enrollments e JOIN courses c ON c.id=e.course_id
+    WHERE e.user_id=$1 AND c.teacher_id=$2 ORDER BY e.created_at`, [sid, u.id])).rows;
+  return s;
+});
+route('GET', '/api/teacher/codes', ['teacher'], async ({ u }) => ({
+  codes: (await q(`SELECT k.code,k.course_id FROM codes k JOIN courses c ON c.id=k.course_id
+    WHERE c.teacher_id=$1 AND k.used_by IS NULL ORDER BY k.created_at DESC, k.code LIMIT 100`, [u.id])).rows
+}));
+// طلاب المستر = المشتركين في كورساته. التقدم لسه مش متسجّل (بيتربط مع المشغّل)
+route('GET', '/api/teacher/students', ['teacher'], async ({ u }) => ({
+  students: (await q(`SELECT s.id,s.name,s.grade,MIN(e.created_at) AS joined FROM enrollments e
+    JOIN courses c ON c.id=e.course_id JOIN users s ON s.id=e.user_id
+    WHERE c.teacher_id=$1 GROUP BY s.id,s.name,s.grade ORDER BY joined DESC LIMIT 200`, [u.id])).rows
+}));
+route('GET', '/api/teacher/stats', ['teacher'], async ({ u }) => {
+  const k = await one(`SELECT
+    (SELECT COUNT(DISTINCT e.user_id)::int FROM enrollments e JOIN courses c ON c.id=e.course_id WHERE c.teacher_id=$1) AS students,
+    (SELECT COUNT(*)::int FROM courses WHERE teacher_id=$1 AND published) AS published,
+    (SELECT COUNT(*)::int FROM charge_requests WHERE status='pending') AS pending`, [u.id]);
+  // الإيراد = مشتريات الكورسات بالرصيد (الأكواد مالهاش سعر مسجّل). آخر ٦ شهور بالقروش
+  const rows = (await q(`SELECT to_char(date_trunc('month',w.created_at),'YYYY-MM') AS m, (-SUM(w.delta))::int AS total
+    FROM wallet_tx w JOIN courses c ON c.id::text=w.ref WHERE w.reason='course' AND c.teacher_id=$1
+    AND w.created_at >= date_trunc('month',now()) - interval '5 months' GROUP BY 1`, [u.id])).rows;
+  const by = Object.fromEntries(rows.map((r) => [r.m, r.total]));
+  const revenue = [];
+  const d = new Date(); d.setUTCDate(1);
+  for (let i = 5; i >= 0; i--) {
+    const x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - i, 1));
+    const key = x.getUTCFullYear() + '-' + String(x.getUTCMonth() + 1).padStart(2, '0');
+    revenue.push({ month: x.getUTCMonth() + 1, total: by[key] || 0 });
+  }
+  return { ...k, monthRevenue: revenue[5].total, revenue };
+});
+
 // ---------- تشغيل محلي ----------
 export const createServer = () => http.createServer((req, res) =>
   new URL(req.url, 'http://x').pathname.startsWith('/api/') ? handleApi(req, res) : serveStatic(new URL(req.url, 'http://x').pathname, res));

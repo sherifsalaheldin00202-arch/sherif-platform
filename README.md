@@ -40,6 +40,8 @@ npm run create-user -- supervisor 01012345679 "كلمة_سر_قوية_١٠+" "ا
 | `POST /api/charge-requests` · `GET /api/charge-requests` (طلباتي) | طالب |
 | `GET /api/teacher/charge-requests` · `POST .../:id/approve` أو `reject` | مستر / مشرف |
 | `POST /api/teacher/courses` · `/:id/publish` · `POST /api/teacher/codes` | مستر |
+| `GET /api/teacher/courses` · `GET /api/teacher/codes` (غير المستخدمة) · `GET /api/teacher/students` · `GET /api/teacher/stats` | مستر |
+| `POST /api/teacher/courses/:id/update` · `/:id/delete` (ممنوع لو عليه مشتركين) · `GET/POST /api/teacher/courses/:id/lessons` · `POST /api/teacher/lessons/:id/delete` · `GET /api/teacher/students/:id` (تقرير الطالب) | مستر |
 
 المبالغ بالقروش في الـ DB والردود (١ جنيه = ١٠٠). الطلبات بتستقبل جنيهات.
 
